@@ -1,5 +1,5 @@
 
-import { Play, Pause, SkipBack, SkipForward, Volume2, Heart } from "lucide-react";
+import { Play, Pause, SkipBack, SkipForward, Volume2, Heart, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { useState } from "react";
@@ -7,7 +7,7 @@ import { useState } from "react";
 const PlayerBar = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState([75]);
-  const [progress, setProgress] = useState([70]); // Mirrored: higher value means more progress
+  const [progress, setProgress] = useState([70]);
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-sm border-t border-slate-700 p-4">
@@ -57,16 +57,26 @@ const PlayerBar = () => {
           </div>
         </div>
 
-        {/* Volume */}
-        <div className="flex items-center space-x-2 flex-1 justify-end">
-          <Volume2 className="h-4 w-4 text-slate-400" />
-          <Slider
-            value={volume}
-            onValueChange={setVolume}
-            max={100}
-            step={1}
-            className="w-24"
-          />
+        {/* Volume and AI Assistant */}
+        <div className="flex items-center space-x-4 flex-1 justify-end">
+          <div className="flex items-center space-x-2">
+            <Volume2 className="h-4 w-4 text-slate-400" />
+            <Slider
+              value={volume}
+              onValueChange={setVolume}
+              max={100}
+              step={1}
+              className="w-24"
+            />
+          </div>
+          
+          {/* AI Assistant Button */}
+          <Button
+            className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white rounded-full w-10 h-10 p-0 shadow-lg hover:shadow-xl transition-all duration-300"
+            title="AI Music Assistant"
+          >
+            <MessageCircle className="h-4 w-4" />
+          </Button>
         </div>
       </div>
     </div>

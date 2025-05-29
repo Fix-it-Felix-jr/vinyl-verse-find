@@ -1,14 +1,16 @@
 
 import { useState } from "react";
-import { ChevronDown, ChevronRight, Filter } from "lucide-react";
+import { ChevronDown, ChevronRight, Filter, Crown, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
+import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 500]);
+  const [selectedFilter, setSelectedFilter] = useState<'all' | 'flea' | 'premium'>('all');
   
   const genres = ["Rock", "Jazz", "Blues", "Metal", "Punk", "Alternative", "Classic Rock", "Progressive"];
   const conditions = ["Mint", "Near Mint", "Very Good", "Good", "Fair"];
@@ -40,6 +42,47 @@ const Sidebar = () => {
           className="text-white hover:bg-slate-800"
         >
           <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
+
+      {/* Special Filters Section */}
+      <div className="space-y-3">
+        <h4 className="text-sm font-medium text-white mb-3">Album Categories</h4>
+        
+        {/* Premium Filter */}
+        <Button
+          onClick={() => setSelectedFilter(selectedFilter === 'premium' ? 'all' : 'premium')}
+          className={`w-full justify-start space-x-3 h-12 ${
+            selectedFilter === 'premium' 
+              ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-black hover:from-yellow-500 hover:to-orange-600' 
+              : 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-600'
+          }`}
+        >
+          <Crown className="h-5 w-5" />
+          <span className="font-medium">Premium Albums</span>
+          {selectedFilter === 'premium' && (
+            <Badge className="ml-auto bg-green-500 text-white text-xs">
+              ✓
+            </Badge>
+          )}
+        </Button>
+
+        {/* Flea Market Filter */}
+        <Button
+          onClick={() => setSelectedFilter(selectedFilter === 'flea' ? 'all' : 'flea')}
+          className={`w-full justify-start space-x-3 h-12 ${
+            selectedFilter === 'flea' 
+              ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-black hover:from-green-500 hover:to-emerald-600' 
+              : 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-600'
+          }`}
+        >
+          <ShoppingCart className="h-5 w-5" />
+          <span className="font-medium">Flea Market</span>
+          {selectedFilter === 'flea' && (
+            <Badge className="ml-auto bg-green-500 text-white text-xs">
+              ✓
+            </Badge>
+          )}
         </Button>
       </div>
 
