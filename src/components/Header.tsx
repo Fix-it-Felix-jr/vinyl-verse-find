@@ -1,4 +1,3 @@
-
 import { Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +7,7 @@ const Header = () => {
     <header className="bg-slate-900/95 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <h1 className="text-2xl font-bold text-white">VinylVault</h1>
+          <h1 className="text-2xl font-bold text-white">RetroSpin</h1>
         </div>
         
         <div className="flex-1 max-w-2xl mx-8">

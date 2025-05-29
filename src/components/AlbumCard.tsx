@@ -1,4 +1,3 @@
-
 import { Star, Calendar, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -13,6 +12,7 @@ interface AlbumCardProps {
   isPremium?: boolean;
   isAuction?: boolean;
   bids?: number;
+  onClick?: () => void;
 }
 
 const AlbumCard = ({ 
@@ -25,10 +25,14 @@ const AlbumCard = ({
   imageUrl, 
   isPremium = false,
   isAuction = false,
-  bids = 0 
+  bids = 0,
+  onClick
 }: AlbumCardProps) => {
   return (
-    <div className="group relative bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-750 transition-all duration-300 hover:scale-105 hover:shadow-xl border border-slate-700 hover:border-purple-500/50">
+    <div 
+      className="group relative bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-750 transition-all duration-300 hover:scale-105 hover:shadow-xl border border-slate-700 hover:border-purple-500/50 cursor-pointer"
+      onClick={onClick}
+    >
       <div className="relative">
         <img 
           src={imageUrl} 

@@ -1,7 +1,12 @@
 
+import { useState } from "react";
 import AlbumCard from "./AlbumCard";
+import AlbumInfoModal from "./AlbumInfoModal";
 
 const AlbumGrid = () => {
+  const [selectedAlbum, setSelectedAlbum] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const albums = [
     {
       title: "The Dark Side of the Moon",
@@ -84,12 +89,34 @@ const AlbumGrid = () => {
     }
   ];
 
+  const handleAlbumClick = (album: any) => {
+    setSelectedAlbum(album);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedAlbum(null);
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
-      {albums.map((album, index) => (
-        <AlbumCard key={index} {...album} />
-      ))}
-    </div>
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
+        {albums.map((album, index) => (
+          <AlbumCard 
+            key={index} 
+            {...album} 
+            onClick={() => handleAlbumClick(album)}
+          />
+        ))}
+      </div>
+      
+      <AlbumInfoModal 
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        album={selectedAlbum}
+      />
+    </>
   );
 };
 
