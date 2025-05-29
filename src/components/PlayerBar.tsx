@@ -71,8 +71,8 @@ const PlayerBar = () => {
             />
           </div>
           
-          {/* AI Assistant positioned at extreme right with padding */}
-          <div className="pr-2">
+          {/* AI Assistant positioned at extreme right with more padding */}
+          <div className="pr-6">
             <AiAssistant />
           </div>
         </div>
