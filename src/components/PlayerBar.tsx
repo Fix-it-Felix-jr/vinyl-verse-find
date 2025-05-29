@@ -1,8 +1,9 @@
 
-import { Play, Pause, SkipBack, SkipForward, Volume2, Heart, MessageCircle } from "lucide-react";
+import { Play, Pause, SkipBack, SkipForward, Volume2, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { useState } from "react";
+import AiAssistant from "./AiAssistant";
 
 const PlayerBar = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -70,13 +71,10 @@ const PlayerBar = () => {
             />
           </div>
           
-          {/* AI Assistant Button */}
-          <Button
-            className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white rounded-full w-10 h-10 p-0 shadow-lg hover:shadow-xl transition-all duration-300"
-            title="AI Music Assistant"
-          >
-            <MessageCircle className="h-4 w-4" />
-          </Button>
+          {/* AI Assistant positioned at extreme right with padding */}
+          <div className="pr-2">
+            <AiAssistant />
+          </div>
         </div>
       </div>
     </div>
