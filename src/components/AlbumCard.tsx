@@ -1,5 +1,7 @@
-import { Star, Calendar, Eye } from "lucide-react";
+
+import { Star, Calendar, Eye, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface AlbumCardProps {
   title: string;
@@ -28,6 +30,12 @@ const AlbumCard = ({
   bids = 0,
   onClick
 }: AlbumCardProps) => {
+  const handlePlayClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    console.log(`Playing preview for ${title} by ${artist}`);
+    // This would integrate with the PlayerBar component to start playing
+  };
+
   return (
     <div 
       className="group relative bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-750 transition-all duration-300 hover:scale-105 hover:shadow-xl border border-slate-700 hover:border-purple-500/50 cursor-pointer"
@@ -49,8 +57,18 @@ const AlbumCard = ({
             Auction
           </Badge>
         )}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
-          <Eye className="h-8 w-8 text-white" />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center space-x-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="bg-white/20 hover:bg-white/30 text-white rounded-full w-12 h-12 p-0"
+              onClick={handlePlayClick}
+            >
+              <Play className="h-6 w-6" />
+            </Button>
+            <Eye className="h-8 w-8 text-white" />
+          </div>
         </div>
       </div>
       

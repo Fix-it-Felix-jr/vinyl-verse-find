@@ -30,7 +30,7 @@ const Sidebar = () => {
   }
 
   return (
-    <div className="w-80 bg-slate-900 border-r border-slate-700 p-4 space-y-6">
+    <div className="w-80 bg-slate-900 border-r border-slate-700 p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-white">Filters</h3>
         <Button
@@ -48,7 +48,7 @@ const Sidebar = () => {
           <span className="font-medium">Genre</span>
           <ChevronDown className="h-4 w-4" />
         </CollapsibleTrigger>
-        <CollapsibleContent className="space-y-2 mt-2">
+        <CollapsibleContent className="space-y-2 mt-2 pl-2">
           {genres.map((genre) => (
             <div key={genre} className="flex items-center space-x-2">
               <Checkbox id={genre} />
@@ -65,7 +65,7 @@ const Sidebar = () => {
           <span className="font-medium">Price Range</span>
           <ChevronDown className="h-4 w-4" />
         </CollapsibleTrigger>
-        <CollapsibleContent className="space-y-4 mt-2">
+        <CollapsibleContent className="space-y-4 mt-2 pl-2">
           <Slider
             value={priceRange}
             onValueChange={setPriceRange}
@@ -85,7 +85,7 @@ const Sidebar = () => {
           <span className="font-medium">Condition</span>
           <ChevronDown className="h-4 w-4" />
         </CollapsibleTrigger>
-        <CollapsibleContent className="space-y-2 mt-2">
+        <CollapsibleContent className="space-y-2 mt-2 pl-2">
           {conditions.map((condition) => (
             <div key={condition} className="flex items-center space-x-2">
               <Checkbox id={condition} />
@@ -102,7 +102,7 @@ const Sidebar = () => {
           <span className="font-medium">Era</span>
           <ChevronDown className="h-4 w-4" />
         </CollapsibleTrigger>
-        <CollapsibleContent className="space-y-2 mt-2">
+        <CollapsibleContent className="space-y-2 mt-2 pl-2">
           {decades.map((decade) => (
             <div key={decade} className="flex items-center space-x-2">
               <Checkbox id={decade} />

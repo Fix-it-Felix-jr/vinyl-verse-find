@@ -7,7 +7,7 @@ import { useState } from "react";
 const PlayerBar = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState([75]);
-  const [progress, setProgress] = useState([30]);
+  const [progress, setProgress] = useState([70]); // Mirrored: higher value means more progress
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-sm border-t border-slate-700 p-4">
