@@ -6,15 +6,50 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useFilters } from "@/contexts/FilterContext";
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [priceRange, setPriceRange] = useState([0, 500]);
-  const [selectedFilter, setSelectedFilter] = useState<'all' | 'flea' | 'premium'>('all');
+  const {
+    selectedGenres,
+    setSelectedGenres,
+    selectedConditions,
+    setSelectedConditions,
+    selectedDecades,
+    setSelectedDecades,
+    priceRange,
+    setPriceRange,
+    categoryFilter,
+    setCategoryFilter
+  } = useFilters();
   
   const genres = ["Rock", "Jazz", "Blues", "Metal", "Punk", "Alternative", "Classic Rock", "Progressive"];
   const conditions = ["Mint", "Near Mint", "Very Good", "Good", "Fair"];
   const decades = ["2020s", "2010s", "2000s", "1990s", "1980s", "1970s", "1960s"];
+
+  const handleGenreChange = (genre: string, checked: boolean) => {
+    if (checked) {
+      setSelectedGenres([...selectedGenres, genre]);
+    } else {
+      setSelectedGenres(selectedGenres.filter(g => g !== genre));
+    }
+  };
+
+  const handleConditionChange = (condition: string, checked: boolean) => {
+    if (checked) {
+      setSelectedConditions([...selectedConditions, condition]);
+    } else {
+      setSelectedConditions(selectedConditions.filter(c => c !== condition));
+    }
+  };
+
+  const handleDecadeChange = (decade: string, checked: boolean) => {
+    if (checked) {
+      setSelectedDecades([...selectedDecades, decade]);
+    } else {
+      setSelectedDecades(selectedDecades.filter(d => d !== decade));
+    }
+  };
 
   if (isCollapsed) {
     return (
@@ -51,16 +86,16 @@ const Sidebar = () => {
         
         {/* Premium Filter */}
         <Button
-          onClick={() => setSelectedFilter(selectedFilter === 'premium' ? 'all' : 'premium')}
+          onClick={() => setCategoryFilter(categoryFilter === 'premium' ? 'all' : 'premium')}
           className={`w-full justify-start space-x-3 h-12 ${
-            selectedFilter === 'premium' 
+            categoryFilter === 'premium' 
               ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-black hover:from-yellow-500 hover:to-orange-600' 
               : 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-600'
           }`}
         >
           <Crown className="h-5 w-5" />
           <span className="font-medium">Premium Albums</span>
-          {selectedFilter === 'premium' && (
+          {categoryFilter === 'premium' && (
             <Badge className="ml-auto bg-green-500 text-white text-xs">
               ✓
             </Badge>
@@ -69,16 +104,16 @@ const Sidebar = () => {
 
         {/* Flea Market Filter */}
         <Button
-          onClick={() => setSelectedFilter(selectedFilter === 'flea' ? 'all' : 'flea')}
+          onClick={() => setCategoryFilter(categoryFilter === 'flea' ? 'all' : 'flea')}
           className={`w-full justify-start space-x-3 h-12 ${
-            selectedFilter === 'flea' 
+            categoryFilter === 'flea' 
               ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-black hover:from-green-500 hover:to-emerald-600' 
               : 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-600'
           }`}
         >
           <ShoppingCart className="h-5 w-5" />
           <span className="font-medium">Flea Market</span>
-          {selectedFilter === 'flea' && (
+          {categoryFilter === 'flea' && (
             <Badge className="ml-auto bg-green-500 text-white text-xs">
               ✓
             </Badge>
@@ -94,7 +129,11 @@ const Sidebar = () => {
         <CollapsibleContent className="space-y-2 mt-2 pl-2">
           {genres.map((genre) => (
             <div key={genre} className="flex items-center space-x-2">
-              <Checkbox id={genre} />
+              <Checkbox 
+                id={genre} 
+                checked={selectedGenres.includes(genre)}
+                onCheckedChange={(checked) => handleGenreChange(genre, checked as boolean)}
+              />
               <label htmlFor={genre} className="text-sm text-slate-300 cursor-pointer">
                 {genre}
               </label>
@@ -131,7 +170,11 @@ const Sidebar = () => {
         <CollapsibleContent className="space-y-2 mt-2 pl-2">
           {conditions.map((condition) => (
             <div key={condition} className="flex items-center space-x-2">
-              <Checkbox id={condition} />
+              <Checkbox 
+                id={condition} 
+                checked={selectedConditions.includes(condition)}
+                onCheckedChange={(checked) => handleConditionChange(condition, checked as boolean)}
+              />
               <label htmlFor={condition} className="text-sm text-slate-300 cursor-pointer">
                 {condition}
               </label>
@@ -148,7 +191,11 @@ const Sidebar = () => {
         <CollapsibleContent className="space-y-2 mt-2 pl-2">
           {decades.map((decade) => (
             <div key={decade} className="flex items-center space-x-2">
-              <Checkbox id={decade} />
+              <Checkbox 
+                id={decade} 
+                checked={selectedDecades.includes(decade)}
+                onCheckedChange={(checked) => handleDecadeChange(decade, checked as boolean)}
+              />
               <label htmlFor={decade} className="text-sm text-slate-300 cursor-pointer">
                 {decade}
               </label>

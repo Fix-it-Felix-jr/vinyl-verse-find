@@ -2,6 +2,7 @@
 import { Star, Calendar, Eye, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { usePlayer } from "@/contexts/PlayerContext";
 
 interface AlbumCardProps {
   title: string;
@@ -30,10 +31,17 @@ const AlbumCard = ({
   bids = 0,
   onClick
 }: AlbumCardProps) => {
+  const { setCurrentAlbum, setIsPlaying } = usePlayer();
+
   const handlePlayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log(`Playing preview for ${title} by ${artist}`);
-    // This would integrate with the PlayerBar component to start playing
+    setCurrentAlbum({
+      title,
+      artist,
+      imageUrl
+    });
+    setIsPlaying(true);
+    console.log(`Now playing: ${title} by ${artist}`);
   };
 
   return (

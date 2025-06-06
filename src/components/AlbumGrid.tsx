@@ -1,13 +1,23 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AlbumCard from "./AlbumCard";
 import AlbumInfoModal from "./AlbumInfoModal";
+import { useFilters } from "@/contexts/FilterContext";
 
 const AlbumGrid = () => {
   const [selectedAlbum, setSelectedAlbum] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [allAlbums, setAllAlbums] = useState<any[]>([]);
+  
+  const {
+    selectedGenres,
+    selectedConditions,
+    selectedDecades,
+    priceRange,
+    categoryFilter
+  } = useFilters();
 
-  const albums = [
+  const defaultAlbums = [
     {
       title: "The Dark Side of the Moon",
       artist: "Pink Floyd",
@@ -16,7 +26,8 @@ const AlbumGrid = () => {
       year: 1973,
       rating: 5,
       imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop",
-      isPremium: true
+      isPremium: true,
+      genre: "Rock"
     },
     {
       title: "Led Zeppelin IV",
@@ -25,7 +36,8 @@ const AlbumGrid = () => {
       condition: "Very Good",
       year: 1971,
       rating: 4,
-      imageUrl: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=300&h=300&fit=crop"
+      imageUrl: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=300&h=300&fit=crop",
+      genre: "Rock"
     },
     {
       title: "Nevermind",
@@ -36,7 +48,8 @@ const AlbumGrid = () => {
       rating: 5,
       imageUrl: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=300&h=300&fit=crop",
       isAuction: true,
-      bids: 12
+      bids: 12,
+      genre: "Alternative"
     },
     {
       title: "Abbey Road",
@@ -46,7 +59,8 @@ const AlbumGrid = () => {
       year: 1969,
       rating: 5,
       imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop",
-      isPremium: true
+      isPremium: true,
+      genre: "Rock"
     },
     {
       title: "Back in Black",
@@ -55,7 +69,8 @@ const AlbumGrid = () => {
       condition: "Very Good",
       year: 1980,
       rating: 4,
-      imageUrl: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=300&h=300&fit=crop"
+      imageUrl: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=300&h=300&fit=crop",
+      genre: "Rock"
     },
     {
       title: "The Wall",
@@ -64,7 +79,8 @@ const AlbumGrid = () => {
       condition: "Near Mint",
       year: 1979,
       rating: 5,
-      imageUrl: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=300&h=300&fit=crop"
+      imageUrl: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=300&h=300&fit=crop",
+      genre: "Rock"
     },
     {
       title: "Master of Puppets",
@@ -75,7 +91,8 @@ const AlbumGrid = () => {
       rating: 4,
       imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop",
       isAuction: true,
-      bids: 8
+      bids: 8,
+      genre: "Metal"
     },
     {
       title: "Rumours",
@@ -85,9 +102,40 @@ const AlbumGrid = () => {
       year: 1977,
       rating: 5,
       imageUrl: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=300&h=300&fit=crop",
-      isPremium: true
+      isPremium: true,
+      genre: "Rock"
     }
   ];
+
+  // Load albums on component mount
+  useEffect(() => {
+    const userAlbums = JSON.parse(localStorage.getItem('userAlbums') || '[]');
+    setAllAlbums([...defaultAlbums, ...userAlbums]);
+  }, []);
+
+  // Filter albums based on selected filters
+  const filteredAlbums = allAlbums.filter(album => {
+    // Category filter
+    if (categoryFilter === 'premium' && !album.isPremium) return false;
+    if (categoryFilter === 'flea' && (album.isPremium || album.price > 50)) return false;
+
+    // Genre filter
+    if (selectedGenres.length > 0 && album.genre && !selectedGenres.includes(album.genre)) return false;
+
+    // Condition filter
+    if (selectedConditions.length > 0 && !selectedConditions.includes(album.condition)) return false;
+
+    // Price range filter
+    if (album.price < priceRange[0] || album.price > priceRange[1]) return false;
+
+    // Decade filter
+    if (selectedDecades.length > 0) {
+      const decade = `${Math.floor(album.year / 10) * 10}s`;
+      if (!selectedDecades.includes(decade)) return false;
+    }
+
+    return true;
+  });
 
   const handleAlbumClick = (album: any) => {
     setSelectedAlbum(album);
@@ -102,14 +150,21 @@ const AlbumGrid = () => {
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
-        {albums.map((album, index) => (
+        {filteredAlbums.map((album, index) => (
           <AlbumCard 
-            key={index} 
+            key={`${album.title}-${album.artist}-${index}`} 
             {...album} 
             onClick={() => handleAlbumClick(album)}
           />
         ))}
       </div>
+      
+      {filteredAlbums.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-slate-400 text-lg">No albums match your current filters</p>
+          <p className="text-slate-500 text-sm mt-2">Try adjusting your search criteria</p>
+        </div>
+      )}
       
       <AlbumInfoModal 
         isOpen={isModalOpen}

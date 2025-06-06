@@ -3,10 +3,11 @@ import { Play, Pause, SkipBack, SkipForward, Volume2, Heart } from "lucide-react
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { useState } from "react";
+import { usePlayer } from "@/contexts/PlayerContext";
 import AiAssistant from "./AiAssistant";
 
 const PlayerBar = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const { currentAlbum, isPlaying, setIsPlaying } = usePlayer();
   const [volume, setVolume] = useState([75]);
   const [progress, setProgress] = useState([70]);
 
@@ -16,13 +17,17 @@ const PlayerBar = () => {
         {/* Currently Playing */}
         <div className="flex items-center space-x-3 min-w-0 flex-1">
           <img 
-            src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=60&h=60&fit=crop" 
+            src={currentAlbum?.imageUrl || "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=60&h=60&fit=crop"} 
             alt="Now Playing"
             className="w-12 h-12 rounded object-cover"
           />
           <div className="min-w-0">
-            <p className="text-white text-sm font-medium truncate">Comfortably Numb</p>
-            <p className="text-slate-400 text-xs truncate">Pink Floyd</p>
+            <p className="text-white text-sm font-medium truncate">
+              {currentAlbum?.title || "Comfortably Numb"}
+            </p>
+            <p className="text-slate-400 text-xs truncate">
+              {currentAlbum?.artist || "Pink Floyd"}
+            </p>
           </div>
           <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white">
             <Heart className="h-4 w-4" />
