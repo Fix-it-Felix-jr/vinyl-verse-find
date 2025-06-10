@@ -51,15 +51,15 @@ const PlayerBar = () => {
             </Button>
           </div>
           <div className="flex items-center space-x-2 w-full">
-            <span className="text-xs text-slate-400">1:23</span>
+            <span className="text-xs text-slate-400">4:32</span>
             <Slider
-              value={progress}
-              onValueChange={setProgress}
+              value={[100 - progress[0]]}
+              onValueChange={(value) => setProgress([100 - value[0]])}
               max={100}
               step={1}
               className="flex-1"
             />
-            <span className="text-xs text-slate-400">4:32</span>
+            <span className="text-xs text-slate-400">1:23</span>
           </div>
         </div>
 
@@ -68,8 +68,8 @@ const PlayerBar = () => {
           <div className="flex items-center space-x-2">
             <Volume2 className="h-4 w-4 text-slate-400" />
             <Slider
-              value={volume}
-              onValueChange={setVolume}
+              value={[100 - volume[0]]}
+              onValueChange={(value) => setVolume([100 - value[0]])}
               max={100}
               step={1}
               className="w-24"

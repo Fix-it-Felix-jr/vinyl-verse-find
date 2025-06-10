@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Star, Calendar, MapPin, Heart, ShoppingCart, Music } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 interface AlbumInfoModalProps {
   isOpen: boolean;
@@ -23,7 +25,36 @@ interface AlbumInfoModalProps {
 }
 
 const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   if (!album) return null;
+
+  const handleBuyNow = () => {
+    toast({
+      title: "Purchase Initiated",
+      description: `Redirecting to checkout for ${album.title}...`,
+    });
+    // Simulate checkout process
+    setTimeout(() => {
+      toast({
+        title: "Purchase Successful!",
+        description: `Thank you for purchasing ${album.title} by ${album.artist}`,
+      });
+      onClose();
+    }, 2000);
+  };
+
+  const handlePlaceBid = () => {
+    const currentBids = album.bids || 0;
+    const newBidAmount = album.price + 5; // Increment by $5
+    
+    toast({
+      title: "Bid Placed Successfully!",
+      description: `Your bid of $${newBidAmount} for ${album.title} has been placed.`,
+    });
+    onClose();
+  };
 
   // Mock concert data - in a real app this would come from an API
   const suggestedConcerts = [
@@ -108,7 +139,10 @@ const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
                 <div className="space-y-2">
                   <p className="text-2xl font-bold text-green-400">${album.price}</p>
                   <p className="text-sm text-slate-400">{album.bids} bids</p>
-                  <Button className="w-full bg-green-600 hover:bg-green-700">
+                  <Button 
+                    className="w-full bg-green-600 hover:bg-green-700"
+                    onClick={handlePlaceBid}
+                  >
                     Place Bid
                   </Button>
                 </div>
@@ -118,7 +152,10 @@ const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
                     ${album.price}
                   </p>
                   <div className="flex space-x-2">
-                    <Button className="flex-1 bg-purple-600 hover:bg-purple-700">
+                    <Button 
+                      className="flex-1 bg-purple-600 hover:bg-purple-700"
+                      onClick={handleBuyNow}
+                    >
                       <ShoppingCart className="h-4 w-4 mr-2" />
                       Buy Now
                     </Button>
