@@ -1,3 +1,4 @@
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -6,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Star, Calendar, MapPin, Heart, ShoppingCart, Music, CreditCard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 interface AlbumInfoModalProps {
   isOpen: boolean;
@@ -37,7 +38,71 @@ const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
     email: ''
   });
 
+  // Refs for auto-focus
+  const cardNumberRef = useRef<HTMLInputElement>(null);
+  const expiryDateRef = useRef<HTMLInputElement>(null);
+  const cvvRef = useRef<HTMLInputElement>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+
   if (!album) return null;
+
+  const formatCardNumber = (value: string) => {
+    // Remove all non-digits
+    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    // Add space every 4 digits
+    const matches = v.match(/\d{4,16}/g);
+    const match = matches && matches[0] || '';
+    const parts = [];
+    for (let i = 0, len = match.length; i < len; i += 4) {
+      parts.push(match.substring(i, i + 4));
+    }
+    if (parts.length) {
+      return parts.join(' ');
+    } else {
+      return v;
+    }
+  };
+
+  const formatExpiryDate = (value: string) => {
+    // Remove all non-digits
+    const v = value.replace(/\D+/g, '');
+    // Add slash after 2 digits
+    if (v.length >= 2) {
+      return v.substring(0, 2) + '/' + v.substring(2, 4);
+    }
+    return v;
+  };
+
+  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatCardNumber(e.target.value);
+    setPaymentDetails(prev => ({ ...prev, cardNumber: formatted }));
+    
+    // Auto-advance when 19 characters (16 digits + 3 spaces)
+    if (formatted.replace(/\s/g, '').length === 16) {
+      expiryDateRef.current?.focus();
+    }
+  };
+
+  const handleExpiryDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatExpiryDate(e.target.value);
+    setPaymentDetails(prev => ({ ...prev, expiryDate: formatted }));
+    
+    // Auto-advance when 5 characters (MM/YY)
+    if (formatted.length === 5) {
+      cvvRef.current?.focus();
+    }
+  };
+
+  const handleCvvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D+/g, '').substring(0, 3);
+    setPaymentDetails(prev => ({ ...prev, cvv: value }));
+    
+    // Auto-advance when 3 digits
+    if (value.length === 3) {
+      nameRef.current?.focus();
+    }
+  };
 
   const handleBuyNow = () => {
     setShowPaymentModal(true);
@@ -252,10 +317,12 @@ const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
               <div>
                 <label className="block text-sm font-medium text-white mb-1">Card Number</label>
                 <Input
+                  ref={cardNumberRef}
                   placeholder="1234 5678 9012 3456"
                   value={paymentDetails.cardNumber}
-                  onChange={(e) => setPaymentDetails(prev => ({ ...prev, cardNumber: e.target.value }))}
+                  onChange={handleCardNumberChange}
                   className="bg-slate-700 border-slate-600 text-white"
+                  maxLength={19}
                 />
               </div>
               
@@ -263,19 +330,23 @@ const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
                 <div>
                   <label className="block text-sm font-medium text-white mb-1">Expiry Date</label>
                   <Input
+                    ref={expiryDateRef}
                     placeholder="MM/YY"
                     value={paymentDetails.expiryDate}
-                    onChange={(e) => setPaymentDetails(prev => ({ ...prev, expiryDate: e.target.value }))}
+                    onChange={handleExpiryDateChange}
                     className="bg-slate-700 border-slate-600 text-white"
+                    maxLength={5}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-white mb-1">CVV</label>
                   <Input
+                    ref={cvvRef}
                     placeholder="123"
                     value={paymentDetails.cvv}
-                    onChange={(e) => setPaymentDetails(prev => ({ ...prev, cvv: e.target.value }))}
+                    onChange={handleCvvChange}
                     className="bg-slate-700 border-slate-600 text-white"
+                    maxLength={3}
                   />
                 </div>
               </div>
@@ -283,6 +354,7 @@ const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
               <div>
                 <label className="block text-sm font-medium text-white mb-1">Cardholder Name</label>
                 <Input
+                  ref={nameRef}
                   placeholder="John Doe"
                   value={paymentDetails.name}
                   onChange={(e) => setPaymentDetails(prev => ({ ...prev, name: e.target.value }))}
@@ -293,6 +365,7 @@ const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
               <div>
                 <label className="block text-sm font-medium text-white mb-1">Email</label>
                 <Input
+                  ref={emailRef}
                   placeholder="john@example.com"
                   value={paymentDetails.email}
                   onChange={(e) => setPaymentDetails(prev => ({ ...prev, email: e.target.value }))}

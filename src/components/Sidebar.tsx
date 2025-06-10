@@ -148,13 +148,23 @@ const Sidebar = () => {
           <ChevronDown className="h-4 w-4" />
         </CollapsibleTrigger>
         <CollapsibleContent className="space-y-4 mt-2 pl-2">
-          <Slider
-            value={priceRange}
-            onValueChange={setPriceRange}
-            max={500}
-            step={10}
-            className="w-full"
-          />
+          <div>
+            <style>
+              {`
+                .white-thumbs [role="slider"] {
+                  background-color: white !important;
+                  border-color: white !important;
+                }
+              `}
+            </style>
+            <Slider
+              value={priceRange}
+              onValueChange={setPriceRange}
+              max={500}
+              step={10}
+              className="w-full white-thumbs"
+            />
+          </div>
           <div className="flex justify-between text-sm text-slate-400">
             <span>${priceRange[0]}</span>
             <span>${priceRange[1]}</span>
