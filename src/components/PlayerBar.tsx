@@ -51,15 +51,15 @@ const PlayerBar = () => {
             </Button>
           </div>
           <div className="flex items-center space-x-2 w-full">
-            <span className="text-xs text-slate-400">4:32</span>
+            <span className="text-xs text-slate-400">1:23</span>
             <Slider
-              value={[100 - progress[0]]}
-              onValueChange={(value) => setProgress([100 - value[0]])}
+              value={progress}
+              onValueChange={setProgress}
               max={100}
               step={1}
               className="flex-1"
             />
-            <span className="text-xs text-slate-400">1:23</span>
+            <span className="text-xs text-slate-400">4:32</span>
           </div>
         </div>
 

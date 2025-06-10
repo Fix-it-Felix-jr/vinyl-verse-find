@@ -1,11 +1,12 @@
-
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Star, Calendar, MapPin, Heart, ShoppingCart, Music } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Star, Calendar, MapPin, Heart, ShoppingCart, Music, CreditCard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 interface AlbumInfoModalProps {
   isOpen: boolean;
@@ -27,21 +28,42 @@ interface AlbumInfoModalProps {
 const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentDetails, setPaymentDetails] = useState({
+    cardNumber: '',
+    expiryDate: '',
+    cvv: '',
+    name: '',
+    email: ''
+  });
 
   if (!album) return null;
 
   const handleBuyNow = () => {
+    setShowPaymentModal(true);
+  };
+
+  const handlePaymentSubmit = () => {
     toast({
-      title: "Purchase Initiated",
-      description: `Redirecting to checkout for ${album.title}...`,
+      title: "Payment Processing",
+      description: `Processing payment for ${album.title}...`,
     });
-    // Simulate checkout process
+    
+    // Simulate payment processing
     setTimeout(() => {
       toast({
         title: "Purchase Successful!",
         description: `Thank you for purchasing ${album.title} by ${album.artist}`,
       });
+      setShowPaymentModal(false);
       onClose();
+      setPaymentDetails({
+        cardNumber: '',
+        expiryDate: '',
+        cvv: '',
+        name: '',
+        email: ''
+      });
     }, 2000);
   };
 
@@ -82,131 +104,222 @@ const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
   ];
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl bg-slate-800 border-slate-700 max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-white text-xl">{album.title}</DialogTitle>
-        </DialogHeader>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="space-y-4">
-            <div className="relative">
-              <img 
-                src={album.imageUrl} 
-                alt={`${album.title} by ${album.artist}`}
-                className="w-full rounded-lg"
-              />
-              {album.isPremium && (
-                <Badge className="absolute top-2 left-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-semibold">
-                  Premium
-                </Badge>
-              )}
-              {album.isAuction && (
-                <Badge className="absolute top-2 right-2 bg-green-500 text-white font-semibold">
-                  Auction
-                </Badge>
-              )}
-            </div>
-          </div>
+    <>
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="max-w-4xl bg-slate-800 border-slate-700 max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-white text-xl">{album.title}</DialogTitle>
+          </DialogHeader>
           
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-lg font-semibold text-white">{album.artist}</h3>
-              <div className="flex items-center space-x-1 mt-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star 
-                    key={i} 
-                    className={`h-4 w-4 ${i < album.rating ? 'text-yellow-400 fill-current' : 'text-slate-600'}`} 
-                  />
-                ))}
-                <span className="text-sm text-slate-400 ml-2">({album.rating}/5)</span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div className="relative">
+                <img 
+                  src={album.imageUrl} 
+                  alt={`${album.title} by ${album.artist}`}
+                  className="w-full rounded-lg"
+                />
+                {album.isPremium && (
+                  <Badge className="absolute top-2 left-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-semibold">
+                    Premium
+                  </Badge>
+                )}
+                {album.isAuction && (
+                  <Badge className="absolute top-2 right-2 bg-green-500 text-white font-semibold">
+                    Auction
+                  </Badge>
+                )}
               </div>
             </div>
             
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2 text-slate-300">
-                <Calendar className="h-4 w-4" />
-                <span>Released: {album.year}</span>
-              </div>
-              <div className="flex items-center space-x-2 text-slate-300">
-                <MapPin className="h-4 w-4" />
-                <span>Condition: {album.condition}</span>
-              </div>
-            </div>
-            
-            <div className="pt-4 border-t border-slate-700">
-              {album.isAuction ? (
-                <div className="space-y-2">
-                  <p className="text-2xl font-bold text-green-400">${album.price}</p>
-                  <p className="text-sm text-slate-400">{album.bids} bids</p>
-                  <Button 
-                    className="w-full bg-green-600 hover:bg-green-700"
-                    onClick={handlePlaceBid}
-                  >
-                    Place Bid
-                  </Button>
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold text-white">{album.artist}</h3>
+                <div className="flex items-center space-x-1 mt-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star 
+                      key={i} 
+                      className={`h-4 w-4 ${i < album.rating ? 'text-yellow-400 fill-current' : 'text-slate-600'}`} 
+                    />
+                  ))}
+                  <span className="text-sm text-slate-400 ml-2">({album.rating}/5)</span>
                 </div>
-              ) : (
-                <div className="space-y-2">
-                  <p className={`text-2xl font-bold ${album.isPremium ? 'text-yellow-400' : 'text-white'}`}>
-                    ${album.price}
-                  </p>
-                  <div className="flex space-x-2">
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2 text-slate-300">
+                  <Calendar className="h-4 w-4" />
+                  <span>Released: {album.year}</span>
+                </div>
+                <div className="flex items-center space-x-2 text-slate-300">
+                  <MapPin className="h-4 w-4" />
+                  <span>Condition: {album.condition}</span>
+                </div>
+              </div>
+              
+              <div className="pt-4 border-t border-slate-700">
+                {album.isAuction ? (
+                  <div className="space-y-2">
+                    <p className="text-2xl font-bold text-green-400">${album.price}</p>
+                    <p className="text-sm text-slate-400">{album.bids} bids</p>
                     <Button 
-                      className="flex-1 bg-purple-600 hover:bg-purple-700"
-                      onClick={handleBuyNow}
+                      className="w-full bg-green-600 hover:bg-green-700"
+                      onClick={handlePlaceBid}
                     >
-                      <ShoppingCart className="h-4 w-4 mr-2" />
-                      Buy Now
-                    </Button>
-                    <Button variant="outline" size="sm" className="border-slate-600 text-slate-300 hover:bg-slate-700">
-                      <Heart className="h-4 w-4" />
+                      Place Bid
                     </Button>
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div className="space-y-2">
+                    <p className={`text-2xl font-bold ${album.isPremium ? 'text-yellow-400' : 'text-white'}`}>
+                      ${album.price}
+                    </p>
+                    <div className="flex space-x-2">
+                      <Button 
+                        className="flex-1 bg-purple-600 hover:bg-purple-700"
+                        onClick={handleBuyNow}
+                      >
+                        <ShoppingCart className="h-4 w-4 mr-2" />
+                        Buy Now
+                      </Button>
+                      <Button variant="outline" size="sm" className="border-slate-600 text-slate-300 hover:bg-slate-700">
+                        <Heart className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              <div className="pt-4 border-t border-slate-700">
+                <h4 className="text-sm font-semibold text-white mb-2">Description</h4>
+                <p className="text-sm text-slate-400">
+                  Original pressing of this classic album in {album.condition.toLowerCase()} condition. 
+                  A must-have for any serious collector of {album.artist}'s work.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Suggested Concerts Section */}
+          <div className="mt-6 pt-6 border-t border-slate-700">
+            <div className="flex items-center space-x-2 mb-4">
+              <Music className="h-5 w-5 text-purple-400" />
+              <h4 className="text-lg font-semibold text-white">Upcoming {album.artist} Concerts</h4>
             </div>
             
-            <div className="pt-4 border-t border-slate-700">
-              <h4 className="text-sm font-semibold text-white mb-2">Description</h4>
-              <p className="text-sm text-slate-400">
-                Original pressing of this classic album in {album.condition.toLowerCase()} condition. 
-                A must-have for any serious collector of {album.artist}'s work.
-              </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {suggestedConcerts.map((concert, index) => (
+                <Card key={index} className="bg-slate-700 border-slate-600 p-4">
+                  <div className="space-y-2">
+                    <h5 className="font-semibold text-white">{concert.venue}</h5>
+                    <p className="text-slate-300 text-sm">{concert.city}</p>
+                    <div className="flex items-center space-x-1 text-slate-400 text-xs">
+                      <Calendar className="h-3 w-3" />
+                      <span>{new Date(concert.date).toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex items-center justify-between pt-2">
+                      <span className="text-green-400 font-semibold">${concert.price}</span>
+                      <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-xs">
+                        Get Tickets
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              ))}
             </div>
           </div>
-        </div>
+        </DialogContent>
+      </Dialog>
 
-        {/* Suggested Concerts Section */}
-        <div className="mt-6 pt-6 border-t border-slate-700">
-          <div className="flex items-center space-x-2 mb-4">
-            <Music className="h-5 w-5 text-purple-400" />
-            <h4 className="text-lg font-semibold text-white">Upcoming {album.artist} Concerts</h4>
-          </div>
+      {/* Payment Details Modal */}
+      <Dialog open={showPaymentModal} onOpenChange={setShowPaymentModal}>
+        <DialogContent className="max-w-md bg-slate-800 border-slate-700">
+          <DialogHeader>
+            <DialogTitle className="text-white text-xl flex items-center space-x-2">
+              <CreditCard className="h-5 w-5" />
+              <span>Payment Details</span>
+            </DialogTitle>
+          </DialogHeader>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {suggestedConcerts.map((concert, index) => (
-              <Card key={index} className="bg-slate-700 border-slate-600 p-4">
-                <div className="space-y-2">
-                  <h5 className="font-semibold text-white">{concert.venue}</h5>
-                  <p className="text-slate-300 text-sm">{concert.city}</p>
-                  <div className="flex items-center space-x-1 text-slate-400 text-xs">
-                    <Calendar className="h-3 w-3" />
-                    <span>{new Date(concert.date).toLocaleDateString()}</span>
-                  </div>
-                  <div className="flex items-center justify-between pt-2">
-                    <span className="text-green-400 font-semibold">${concert.price}</span>
-                    <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-xs">
-                      Get Tickets
-                    </Button>
-                  </div>
+          <div className="space-y-4">
+            <div className="bg-slate-700 p-4 rounded-lg">
+              <h4 className="text-white font-semibold">{album.title}</h4>
+              <p className="text-slate-300 text-sm">{album.artist}</p>
+              <p className="text-purple-400 font-bold">${album.price}</p>
+            </div>
+            
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium text-white mb-1">Card Number</label>
+                <Input
+                  placeholder="1234 5678 9012 3456"
+                  value={paymentDetails.cardNumber}
+                  onChange={(e) => setPaymentDetails(prev => ({ ...prev, cardNumber: e.target.value }))}
+                  className="bg-slate-700 border-slate-600 text-white"
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-white mb-1">Expiry Date</label>
+                  <Input
+                    placeholder="MM/YY"
+                    value={paymentDetails.expiryDate}
+                    onChange={(e) => setPaymentDetails(prev => ({ ...prev, expiryDate: e.target.value }))}
+                    className="bg-slate-700 border-slate-600 text-white"
+                  />
                 </div>
-              </Card>
-            ))}
+                <div>
+                  <label className="block text-sm font-medium text-white mb-1">CVV</label>
+                  <Input
+                    placeholder="123"
+                    value={paymentDetails.cvv}
+                    onChange={(e) => setPaymentDetails(prev => ({ ...prev, cvv: e.target.value }))}
+                    className="bg-slate-700 border-slate-600 text-white"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-white mb-1">Cardholder Name</label>
+                <Input
+                  placeholder="John Doe"
+                  value={paymentDetails.name}
+                  onChange={(e) => setPaymentDetails(prev => ({ ...prev, name: e.target.value }))}
+                  className="bg-slate-700 border-slate-600 text-white"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-white mb-1">Email</label>
+                <Input
+                  placeholder="john@example.com"
+                  value={paymentDetails.email}
+                  onChange={(e) => setPaymentDetails(prev => ({ ...prev, email: e.target.value }))}
+                  className="bg-slate-700 border-slate-600 text-white"
+                />
+              </div>
+            </div>
+            
+            <div className="flex space-x-3 pt-4">
+              <Button 
+                variant="outline" 
+                onClick={() => setShowPaymentModal(false)}
+                className="flex-1 border-slate-600 text-slate-300 hover:bg-slate-700"
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={handlePaymentSubmit}
+                className="flex-1 bg-purple-600 hover:bg-purple-700"
+              >
+                Complete Payment
+              </Button>
+            </div>
           </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
