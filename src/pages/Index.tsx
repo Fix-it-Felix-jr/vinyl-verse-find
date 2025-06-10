@@ -5,6 +5,7 @@ import AlbumGrid from "@/components/AlbumGrid";
 import PlayerBar from "@/components/PlayerBar";
 import FloatingButtons from "@/components/FloatingButtons";
 import FeaturedSection from "@/components/FeaturedSection";
+import ChatSystem from "@/components/ChatSystem";
 
 const Index = () => {
   return (
@@ -30,6 +31,7 @@ const Index = () => {
       
       <PlayerBar />
       <FloatingButtons />
+      <ChatSystem />
     </div>
   );
 };

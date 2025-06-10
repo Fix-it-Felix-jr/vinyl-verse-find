@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft, Edit, Heart, ShoppingBag, Star, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -10,6 +10,7 @@ import Header from "@/components/Header";
 const Profile = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'collection' | 'wishlist' | 'selling'>('collection');
+  const [userListedAlbums, setUserListedAlbums] = useState<any[]>([]);
 
   const userCollection = [
     {
@@ -38,6 +39,12 @@ const Profile = () => {
       imageUrl: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=300&h=300&fit=crop"
     }
   ];
+
+  // Load user's listed albums
+  useEffect(() => {
+    const userAlbums = JSON.parse(localStorage.getItem('userAlbums') || '[]');
+    setUserListedAlbums(userAlbums);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -147,11 +154,37 @@ const Profile = () => {
         )}
 
         {activeTab === 'selling' && (
-          <div className="text-center py-12">
-            <p className="text-slate-400">No albums currently listed for sale</p>
-            <Button className="mt-4 bg-green-600 hover:bg-green-700" onClick={() => navigate('/sell')}>
-              Start Selling
-            </Button>
+          <div>
+            {userListedAlbums.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {userListedAlbums.map((album, index) => (
+                  <Card key={index} className="bg-slate-800 border-slate-700 overflow-hidden">
+                    <img src={album.imageUrl} alt={album.title} className="w-full h-48 object-cover" />
+                    <div className="p-4">
+                      <h3 className="font-semibold text-white">{album.title}</h3>
+                      <p className="text-slate-400 text-sm">{album.artist}</p>
+                      <div className="flex justify-between items-center mt-2">
+                        <Badge variant="outline" className="text-xs border-slate-600 text-slate-300">
+                          {album.condition}
+                        </Badge>
+                        <span className="text-green-400 font-semibold">${album.price}</span>
+                      </div>
+                      <div className="flex items-center text-xs text-slate-400 mt-2">
+                        <Calendar className="h-3 w-3 mr-1" />
+                        Listed {album.year && `• ${album.year}`}
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-slate-400">No albums currently listed for sale</p>
+                <Button className="mt-4 bg-green-600 hover:bg-green-700" onClick={() => navigate('/sell')}>
+                  Start Selling
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </div>

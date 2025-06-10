@@ -11,12 +11,14 @@ const Header = () => {
     <header className="bg-slate-900/95 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-4 flex-1">
-          <h1 
-            className="text-2xl font-bold text-white cursor-pointer" 
-            onClick={() => navigate('/')}
-          >
-            RetroSpin
-          </h1>
+          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => navigate('/')}>
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-lg">RS</span>
+            </div>
+            <h1 className="text-2xl font-bold text-white">
+              RetroSpin
+            </h1>
+          </div>
         </div>
         
         <div className="flex-1 max-w-2xl mx-8">
@@ -32,11 +34,11 @@ const Header = () => {
         <div className="flex items-center justify-end flex-1">
           <Button 
             variant="ghost" 
-            size="sm" 
-            className="text-white hover:bg-slate-800"
+            size="lg" 
+            className="text-white hover:bg-slate-800 p-3"
             onClick={() => navigate('/profile')}
           >
-            <User className="h-5 w-5" />
+            <User className="h-6 w-6" />
           </Button>
         </div>
       </div>

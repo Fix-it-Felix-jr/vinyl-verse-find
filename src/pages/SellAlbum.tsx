@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ArrowLeft, Upload, X, Check, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,6 +19,7 @@ const SellAlbum = () => {
     artist: "",
     year: "",
     genre: "",
+    format: "",
     condition: "",
     price: "",
     description: "",
@@ -52,7 +52,7 @@ const SellAlbum = () => {
   const validateStep = (step: number) => {
     switch (step) {
       case 1:
-        return formData.title && formData.artist;
+        return formData.title && formData.artist && formData.format;
       case 2:
         return formData.condition && formData.price;
       case 3:
@@ -79,7 +79,7 @@ const SellAlbum = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.title || !formData.artist || !formData.price || !formData.condition) {
+    if (!formData.title || !formData.artist || !formData.price || !formData.condition || !formData.format) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
@@ -93,6 +93,7 @@ const SellAlbum = () => {
       artist: formData.artist,
       price: parseInt(formData.price),
       condition: formData.condition,
+      format: formData.format,
       year: parseInt(formData.year) || 2024,
       rating: 4,
       imageUrl: imagePreview || "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop",
@@ -146,6 +147,19 @@ const SellAlbum = () => {
                   placeholder="e.g., Pink Floyd"
                   required
                 />
+              </div>
+
+              <div>
+                <Label className="text-white">Format *</Label>
+                <Select onValueChange={(value) => setFormData({ ...formData, format: value })}>
+                  <SelectTrigger className="bg-slate-700 border-slate-600 text-white mt-2">
+                    <SelectValue placeholder="Select format" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Vinyl">Vinyl</SelectItem>
+                    <SelectItem value="CD">CD</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
               <div className="grid grid-cols-2 gap-4">
@@ -297,6 +311,10 @@ const SellAlbum = () => {
               </div>
               
               <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-slate-400">Format:</span>
+                  <span className="text-white ml-2">{formData.format}</span>
+                </div>
                 <div>
                   <span className="text-slate-400">Condition:</span>
                   <span className="text-white ml-2">{formData.condition}</span>
