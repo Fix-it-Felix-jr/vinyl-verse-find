@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Star, Calendar, MapPin, Heart, ShoppingCart, Music, CreditCard } from "lucide-react";
+import { Star, Calendar, MapPin, Heart, ShoppingCart, Music, CreditCard, Gavel } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useRef } from "react";
@@ -30,6 +30,8 @@ const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showBidModal, setShowBidModal] = useState(false);
+  const [bidAmount, setBidAmount] = useState('');
   const [paymentDetails, setPaymentDetails] = useState({
     cardNumber: '',
     expiryDate: '',
@@ -133,13 +135,43 @@ const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
   };
 
   const handlePlaceBid = () => {
-    const currentBids = album.bids || 0;
-    const newBidAmount = album.price + 5; // Increment by $5
+    setShowBidModal(true);
+  };
+
+  const handleSubmitBid = () => {
+    const bid = parseFloat(bidAmount);
+    if (!bid || bid <= album.price) {
+      toast({
+        title: "Invalid Bid",
+        description: `Your bid must be higher than the current price of $${album.price}`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Store bid in localStorage
+    const existingBids = JSON.parse(localStorage.getItem('userBids') || '[]');
+    const newBid = {
+      id: Date.now(),
+      albumTitle: album.title,
+      albumArtist: album.artist,
+      albumImageUrl: album.imageUrl,
+      currentPrice: album.price,
+      bidAmount: bid,
+      bidDate: new Date().toISOString(),
+      status: 'active'
+    };
     
+    existingBids.push(newBid);
+    localStorage.setItem('userBids', JSON.stringify(existingBids));
+
     toast({
       title: "Bid Placed Successfully!",
-      description: `Your bid of $${newBidAmount} for ${album.title} has been placed.`,
+      description: `Your bid of $${bid} for ${album.title} has been placed.`,
     });
+    
+    setShowBidModal(false);
+    setBidAmount('');
     onClose();
   };
 
@@ -231,6 +263,7 @@ const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
                       className="w-full bg-green-600 hover:bg-green-700"
                       onClick={handlePlaceBid}
                     >
+                      <Gavel className="h-4 w-4 mr-2" />
                       Place Bid
                     </Button>
                   </div>
@@ -291,6 +324,58 @@ const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
                   </div>
                 </Card>
               ))}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Bid Modal */}
+      <Dialog open={showBidModal} onOpenChange={setShowBidModal}>
+        <DialogContent className="max-w-md bg-slate-800 border-slate-700">
+          <DialogHeader>
+            <DialogTitle className="text-white text-xl flex items-center space-x-2">
+              <Gavel className="h-5 w-5" />
+              <span>Place Your Bid</span>
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="bg-slate-700 p-4 rounded-lg">
+              <h4 className="text-white font-semibold">{album?.title}</h4>
+              <p className="text-slate-300 text-sm">{album?.artist}</p>
+              <p className="text-green-400 font-bold">Current Price: ${album?.price}</p>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-white mb-1">Your Bid Amount</label>
+              <Input
+                type="number"
+                placeholder={`Minimum: $${(album?.price || 0) + 1}`}
+                value={bidAmount}
+                onChange={(e) => setBidAmount(e.target.value)}
+                className="bg-slate-700 border-slate-600 text-white"
+                step="0.01"
+                min={(album?.price || 0) + 1}
+              />
+              <p className="text-xs text-slate-400 mt-1">
+                Your bid must be at least $1 higher than the current price
+              </p>
+            </div>
+            
+            <div className="flex space-x-3 pt-4">
+              <Button 
+                variant="outline" 
+                onClick={() => setShowBidModal(false)}
+                className="flex-1 border-slate-600 text-slate-300 hover:bg-slate-700"
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleSubmitBid}
+                className="flex-1 bg-green-600 hover:bg-green-700"
+              >
+                Place Bid
+              </Button>
             </div>
           </div>
         </DialogContent>

@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { ArrowLeft, Edit, Heart, ShoppingBag, Star, Calendar } from "lucide-react";
+import { ArrowLeft, Edit, Heart, ShoppingBag, Star, Calendar, Gavel, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,8 +8,9 @@ import Header from "@/components/Header";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'collection' | 'wishlist' | 'selling'>('collection');
+  const [activeTab, setActiveTab] = useState<'collection' | 'wishlist' | 'selling' | 'auctions'>('collection');
   const [userListedAlbums, setUserListedAlbums] = useState<any[]>([]);
+  const [userBids, setUserBids] = useState<any[]>([]);
 
   const userCollection = [
     {
@@ -40,10 +40,13 @@ const Profile = () => {
     }
   ];
 
-  // Load user's listed albums
+  // Load user's listed albums and bids
   useEffect(() => {
     const userAlbums = JSON.parse(localStorage.getItem('userAlbums') || '[]');
     setUserListedAlbums(userAlbums);
+    
+    const bids = JSON.parse(localStorage.getItem('userBids') || '[]');
+    setUserBids(bids);
   }, []);
 
   return (
@@ -98,7 +101,8 @@ const Profile = () => {
           {[
             { id: 'collection', label: 'My Collection' },
             { id: 'wishlist', label: 'Wishlist' },
-            { id: 'selling', label: 'Currently Selling' }
+            { id: 'selling', label: 'Currently Selling' },
+            { id: 'auctions', label: 'My Bids' }
           ].map((tab) => (
             <Button
               key={tab.id}
@@ -182,6 +186,60 @@ const Profile = () => {
                 <p className="text-slate-400">No albums currently listed for sale</p>
                 <Button className="mt-4 bg-green-600 hover:bg-green-700" onClick={() => navigate('/sell')}>
                   Start Selling
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'auctions' && (
+          <div>
+            {userBids.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {userBids.map((bid, index) => (
+                  <Card key={index} className="bg-slate-800 border-slate-700 overflow-hidden">
+                    <img src={bid.albumImageUrl} alt={bid.albumTitle} className="w-full h-48 object-cover" />
+                    <div className="p-4">
+                      <h3 className="font-semibold text-white">{bid.albumTitle}</h3>
+                      <p className="text-slate-400 text-sm">{bid.albumArtist}</p>
+                      <div className="flex justify-between items-center mt-2">
+                        <div className="flex flex-col">
+                          <span className="text-xs text-slate-400">Your Bid</span>
+                          <span className="text-green-400 font-semibold">${bid.bidAmount}</span>
+                        </div>
+                        <div className="flex flex-col text-right">
+                          <span className="text-xs text-slate-400">Current Price</span>
+                          <span className="text-white font-semibold">${bid.currentPrice}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between mt-3">
+                        <Badge 
+                          variant="outline" 
+                          className={`text-xs border-slate-600 ${
+                            bid.status === 'active' ? 'text-green-300 border-green-500' : 
+                            bid.status === 'won' ? 'text-blue-300 border-blue-500' : 
+                            'text-red-300 border-red-500'
+                          }`}
+                        >
+                          <Gavel className="h-3 w-3 mr-1" />
+                          {bid.status === 'active' ? 'Active' : bid.status === 'won' ? 'Won' : 'Lost'}
+                        </Badge>
+                        <div className="flex items-center text-xs text-slate-400">
+                          <Clock className="h-3 w-3 mr-1" />
+                          {new Date(bid.bidDate).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <Gavel className="h-16 w-16 text-slate-600 mx-auto mb-4" />
+                <p className="text-slate-400 mb-2">No active bids</p>
+                <p className="text-slate-500 text-sm">Start bidding on auction items to see them here</p>
+                <Button className="mt-4 bg-green-600 hover:bg-green-700" onClick={() => navigate('/')}>
+                  Browse Auctions
                 </Button>
               </div>
             )}
