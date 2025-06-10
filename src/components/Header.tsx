@@ -1,4 +1,3 @@
-
 import { Search, User, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,8 +45,7 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps) => {
         
         <div className="flex items-center justify-end flex-1 space-x-3">
           <Button 
-            variant="outline" 
-            className="border-green-600 text-green-400 hover:bg-green-600 hover:text-white"
+            className="bg-green-600 text-white hover:bg-green-700 border-green-600"
             onClick={() => navigate('/sell')}
           >
             <Plus className="h-4 w-4 mr-2" />

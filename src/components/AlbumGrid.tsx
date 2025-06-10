@@ -1,10 +1,13 @@
-
 import { useState, useEffect } from "react";
 import AlbumCard from "./AlbumCard";
 import AlbumInfoModal from "./AlbumInfoModal";
 import { useFilters } from "@/contexts/FilterContext";
 
-const AlbumGrid = () => {
+interface AlbumGridProps {
+  searchQuery?: string;
+}
+
+const AlbumGrid = ({ searchQuery = "" }: AlbumGridProps) => {
   const [selectedAlbum, setSelectedAlbum] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [allAlbums, setAllAlbums] = useState<any[]>([]);
@@ -113,8 +116,20 @@ const AlbumGrid = () => {
     setAllAlbums([...defaultAlbums, ...userAlbums]);
   }, []);
 
-  // Filter albums based on selected filters
+  // Filter albums based on selected filters AND search query
   const filteredAlbums = allAlbums.filter(album => {
+    // Search query filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      const matchesTitle = album.title.toLowerCase().includes(query);
+      const matchesArtist = album.artist.toLowerCase().includes(query);
+      const matchesGenre = album.genre?.toLowerCase().includes(query);
+      
+      if (!matchesTitle && !matchesArtist && !matchesGenre) {
+        return false;
+      }
+    }
+
     // Category filter
     if (categoryFilter === 'premium' && !album.isPremium) return false;
     if (categoryFilter === 'flea' && (album.isPremium || album.price > 50)) return false;
