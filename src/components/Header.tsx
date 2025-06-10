@@ -1,11 +1,22 @@
 
-import { Search, User } from "lucide-react";
+import { Search, User, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 
-const Header = () => {
+interface HeaderProps {
+  searchQuery?: string;
+  onSearchChange?: (query: string) => void;
+}
+
+const Header = ({ searchQuery = "", onSearchChange }: HeaderProps) => {
   const navigate = useNavigate();
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onSearchChange) {
+      onSearchChange(e.target.value);
+    }
+  };
 
   return (
     <header className="bg-slate-900/95 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50">
@@ -26,12 +37,22 @@ const Header = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
             <Input
               placeholder="Search albums, artists, or genres..."
+              value={searchQuery}
+              onChange={handleSearchChange}
               className="pl-10 bg-slate-800 border-slate-600 text-white placeholder-slate-400 focus:border-purple-500"
             />
           </div>
         </div>
         
-        <div className="flex items-center justify-end flex-1">
+        <div className="flex items-center justify-end flex-1 space-x-3">
+          <Button 
+            variant="outline" 
+            className="border-green-600 text-green-400 hover:bg-green-600 hover:text-white"
+            onClick={() => navigate('/sell')}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Sell Album
+          </Button>
           <Button 
             variant="ghost" 
             size="lg" 

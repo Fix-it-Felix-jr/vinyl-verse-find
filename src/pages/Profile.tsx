@@ -5,12 +5,39 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
+import EditProfile from "@/components/EditProfile";
 
 const Profile = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'collection' | 'wishlist' | 'selling' | 'auctions'>('collection');
   const [userListedAlbums, setUserListedAlbums] = useState<any[]>([]);
   const [userBids, setUserBids] = useState<any[]>([]);
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [profileData, setProfileData] = useState({
+    name: "John Doe",
+    bio: "Vinyl enthusiast since 2020",
+    avatar: ""
+  });
+
+  // Load profile data on mount
+  useEffect(() => {
+    const savedProfile = localStorage.getItem('userProfile');
+    if (savedProfile) {
+      setProfileData(JSON.parse(savedProfile));
+    }
+    
+    const userAlbums = JSON.parse(localStorage.getItem('userAlbums') || '[]');
+    setUserListedAlbums(userAlbums);
+    
+    const bids = JSON.parse(localStorage.getItem('userBids') || '[]');
+    setUserBids(bids);
+  }, []);
+
+  const handleSaveProfile = (newData: any) => {
+    setProfileData(newData);
+    // Save to localStorage or send to backend
+    localStorage.setItem('userProfile', JSON.stringify(newData));
+  };
 
   const userCollection = [
     {
@@ -40,15 +67,6 @@ const Profile = () => {
     }
   ];
 
-  // Load user's listed albums and bids
-  useEffect(() => {
-    const userAlbums = JSON.parse(localStorage.getItem('userAlbums') || '[]');
-    setUserListedAlbums(userAlbums);
-    
-    const bids = JSON.parse(localStorage.getItem('userBids') || '[]');
-    setUserBids(bids);
-  }, []);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <Header />
@@ -69,11 +87,11 @@ const Profile = () => {
         <Card className="bg-slate-800 border-slate-700 p-6 mb-6">
           <div className="flex items-start space-x-6">
             <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-2xl font-bold">JD</span>
+              <span className="text-white text-2xl font-bold">{profileData.name.charAt(0)}</span>
             </div>
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-white mb-2">John Doe</h1>
-              <p className="text-slate-400 mb-4">Vinyl enthusiast since 2020</p>
+              <h1 className="text-2xl font-bold text-white mb-2">{profileData.name}</h1>
+              <p className="text-slate-400 mb-4">{profileData.bio}</p>
               <div className="flex items-center space-x-4 text-sm text-slate-300">
                 <div className="flex items-center space-x-1">
                   <ShoppingBag className="h-4 w-4" />
@@ -89,7 +107,10 @@ const Profile = () => {
                 </div>
               </div>
             </div>
-            <Button className="bg-purple-600 hover:bg-purple-700">
+            <Button 
+              className="bg-purple-600 hover:bg-purple-700"
+              onClick={() => setIsEditProfileOpen(true)}
+            >
               <Edit className="h-4 w-4 mr-2" />
               Edit Profile
             </Button>
@@ -246,6 +267,13 @@ const Profile = () => {
           </div>
         )}
       </div>
+
+      <EditProfile
+        isOpen={isEditProfileOpen}
+        onClose={() => setIsEditProfileOpen(false)}
+        onSave={handleSaveProfile}
+        initialData={profileData}
+      />
     </div>
   );
 };
