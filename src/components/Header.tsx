@@ -35,10 +35,10 @@ const Header = () => {
           <Button 
             variant="ghost" 
             size="lg" 
-            className="text-white hover:bg-slate-800 p-4"
+            className="text-white hover:bg-slate-800 p-5"
             onClick={() => navigate('/profile')}
           >
-            <User className="h-8 w-8" />
+            <User className="h-10 w-10" />
           </Button>
         </div>
       </div>
