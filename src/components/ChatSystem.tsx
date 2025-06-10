@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { MessageCircle, Send, X, Users } from "lucide-react";
+import { Users, Send, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -41,39 +41,39 @@ const ChatSystem = () => {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-28 right-6 bg-purple-600 hover:bg-purple-700 rounded-full w-14 h-14 p-0 shadow-lg z-50"
+        className="fixed bottom-28 right-6 bg-purple-600 hover:bg-purple-700 rounded-full w-16 h-16 p-0 shadow-lg z-50"
       >
-        <MessageCircle className="h-6 w-6" />
+        <Users className="h-8 w-8" />
       </Button>
     );
   }
 
   return (
-    <div className="fixed bottom-28 right-6 w-80 h-96 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50">
+    <div className="fixed bottom-28 right-6 w-96 h-[500px] bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50">
       <div className="flex items-center justify-between p-4 border-b border-slate-700">
-        <h3 className="text-white font-semibold">Community Chat</h3>
+        <h3 className="text-white font-semibold text-lg">Community Chat</h3>
         <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
-          <X className="h-4 w-4 text-slate-400" />
+          <X className="h-5 w-5 text-slate-400" />
         </Button>
       </div>
 
       <div className="flex h-full">
         {/* Chat rooms sidebar */}
-        <div className="w-1/3 border-r border-slate-700 p-2">
-          <div className="space-y-1">
+        <div className="w-2/5 border-r border-slate-700 p-3">
+          <div className="space-y-2">
             {chatRooms.map((room) => (
               <Button
                 key={room.id}
                 variant={activeChat === room.id ? "default" : "ghost"}
                 size="sm"
-                className={`w-full justify-start text-xs ${
+                className={`w-full justify-start text-sm p-3 h-auto ${
                   activeChat === room.id ? 'bg-purple-600' : 'text-slate-300'
                 }`}
                 onClick={() => setActiveChat(room.id as any)}
               >
-                <div className="flex flex-col items-start">
-                  <span className="truncate">{room.name}</span>
-                  <div className="flex items-center space-x-1 text-xs">
+                <div className="flex flex-col items-start w-full">
+                  <span className="truncate font-medium">{room.name}</span>
+                  <div className="flex items-center space-x-1 text-xs mt-1">
                     <Users className="h-3 w-3" />
                     <span>{room.members}</span>
                   </div>
@@ -85,32 +85,32 @@ const ChatSystem = () => {
 
         {/* Chat messages */}
         <div className="flex-1 flex flex-col">
-          <div className="flex-1 p-3 overflow-y-auto">
-            <div className="space-y-2">
+          <div className="flex-1 p-4 overflow-y-auto">
+            <div className="space-y-3">
               {(messages[activeChat as keyof typeof messages] || []).map((msg, index) => (
-                <div key={index} className="text-xs">
-                  <div className="flex items-center space-x-1 mb-1">
+                <div key={index} className="text-sm">
+                  <div className="flex items-center space-x-2 mb-1">
                     <span className="font-medium text-purple-400">{msg.user}</span>
-                    <span className="text-slate-500">{msg.time}</span>
+                    <span className="text-slate-500 text-xs">{msg.time}</span>
                   </div>
-                  <p className="text-slate-300">{msg.message}</p>
+                  <p className="text-slate-300 leading-relaxed">{msg.message}</p>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Message input */}
-          <div className="p-3 border-t border-slate-700">
+          <div className="p-4 border-t border-slate-700">
             <div className="flex space-x-2">
               <Input
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Type a message..."
-                className="bg-slate-700 border-slate-600 text-white text-xs"
+                className="bg-slate-700 border-slate-600 text-white text-sm"
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
               />
               <Button size="sm" onClick={handleSendMessage}>
-                <Send className="h-3 w-3" />
+                <Send className="h-4 w-4" />
               </Button>
             </div>
           </div>
