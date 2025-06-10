@@ -52,13 +52,25 @@ const PlayerBar = () => {
           </div>
           <div className="flex items-center space-x-2 w-full">
             <span className="text-xs text-slate-400">1:23</span>
-            <Slider
-              value={progress}
-              onValueChange={setProgress}
-              max={100}
-              step={1}
-              className="flex-1"
-            />
+            <div className="flex-1">
+              <style>
+                {`
+                  .inverted-progress .bg-secondary {
+                    background-color: hsl(var(--primary)) !important;
+                  }
+                  .inverted-progress .bg-primary {
+                    background-color: hsl(var(--secondary)) !important;
+                  }
+                `}
+              </style>
+              <Slider
+                value={progress}
+                onValueChange={setProgress}
+                max={100}
+                step={1}
+                className="flex-1 inverted-progress"
+              />
+            </div>
             <span className="text-xs text-slate-400">4:32</span>
           </div>
         </div>
@@ -67,13 +79,25 @@ const PlayerBar = () => {
         <div className="flex items-center space-x-4 flex-1 justify-end">
           <div className="flex items-center space-x-2">
             <Volume2 className="h-4 w-4 text-slate-400" />
-            <Slider
-              value={[100 - volume[0]]}
-              onValueChange={(value) => setVolume([100 - value[0]])}
-              max={100}
-              step={1}
-              className="w-24"
-            />
+            <div>
+              <style>
+                {`
+                  .inverted-volume .bg-secondary {
+                    background-color: hsl(var(--primary)) !important;
+                  }
+                  .inverted-volume .bg-primary {
+                    background-color: hsl(var(--secondary)) !important;
+                  }
+                `}
+              </style>
+              <Slider
+                value={volume}
+                onValueChange={setVolume}
+                max={100}
+                step={1}
+                className="w-24 inverted-volume"
+              />
+            </div>
           </div>
           
           {/* AI Assistant positioned at extreme right with more padding */}
