@@ -6,6 +6,7 @@ import AlbumGrid from "@/components/AlbumGrid";
 import PlayerBar from "@/components/PlayerBar";
 import FeaturedSection from "@/components/FeaturedSection";
 import FloatingButtons from "@/components/FloatingButtons";
+import ChatSystem from "@/components/ChatSystem";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -24,6 +25,7 @@ const Index = () => {
       
       <PlayerBar />
       <FloatingButtons />
+      <ChatSystem />
     </div>
   );
 };
