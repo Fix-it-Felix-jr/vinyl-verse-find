@@ -10,6 +10,7 @@ import { FilterProvider } from "@/contexts/FilterContext";
 import Index from "./pages/Index";
 import Profile from "./pages/Profile";
 import SellAlbum from "./pages/SellAlbum";
+import ArtistAlbums from "./pages/ArtistAlbums";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App: React.FC = () => {
                 <Route path="/" element={<Index />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/sell" element={<SellAlbum />} />
+                <Route path="/artist/:artistName" element={<ArtistAlbums />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

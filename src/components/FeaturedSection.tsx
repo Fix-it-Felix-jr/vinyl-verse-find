@@ -2,8 +2,19 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, MapPin } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const FeaturedSection = () => {
+  const navigate = useNavigate();
+
+  const handleDiscoverAlbums = () => {
+    navigate('/artist/Arctic Echoes');
+  };
+
+  const handleGetTickets = () => {
+    window.open('https://www.ticketmaster.com/pink-floyd-experience-tickets/artist/12345', '_blank');
+  };
+
   return (
     <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 border border-purple-500/20 rounded-lg p-6 mb-8">
       <div className="flex flex-col lg:flex-row gap-6">
@@ -22,7 +33,12 @@ const FeaturedSection = () => {
                 Emerging indie rock band from Portland. Their debut album "Frozen Waves" 
                 captures raw emotion with ethereal soundscapes.
               </p>
-              <Button variant="outline" size="sm" className="border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-white">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-white"
+                onClick={handleDiscoverAlbums}
+              >
                 Discover Albums
               </Button>
             </div>
@@ -42,7 +58,12 @@ const FeaturedSection = () => {
               <MapPin className="h-4 w-4" />
               <span>Madison Square Garden, NYC</span>
             </div>
-            <Button variant="outline" size="sm" className="border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white"
+              onClick={handleGetTickets}
+            >
               Get Tickets
             </Button>
           </div>
