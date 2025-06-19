@@ -1,7 +1,9 @@
+
 import { useState } from "react";
-import { Users, Send, X, Hash, Music, Wrench } from "lucide-react";
+import { Users, Send, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const ChatSystem = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,21 +32,21 @@ const ChatSystem = () => {
       name: 'General Discussion', 
       members: 342, 
       latest: 'Anyone selling Pink Floyd records?',
-      icon: Hash
+      image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&h=100&fit=crop&crop=center'
     },
     { 
       id: 'pink-floyd', 
       name: 'Pink Floyd Fans', 
       members: 89, 
       latest: 'Just got The Wall on original pressing!',
-      icon: Music
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=100&h=100&fit=crop&crop=center'
     },
     { 
       id: 'vinyl-care', 
       name: 'Vinyl Care Tips', 
       members: 156, 
       latest: 'Best cleaning solutions?',
-      icon: Wrench
+      image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&h=100&fit=crop&crop=center&sat=-100'
     }
   ];
 
@@ -90,7 +92,6 @@ const ChatSystem = () => {
         <div className="w-2/5 border-r border-slate-700 p-3 flex-shrink-0">
           <div className="space-y-3">
             {chatRooms.map((room) => {
-              const IconComponent = room.icon;
               return (
                 <Button
                   key={room.id}
@@ -102,7 +103,12 @@ const ChatSystem = () => {
                   onClick={() => setActiveChat(room.id as any)}
                 >
                   <div className="flex items-center space-x-2 w-full">
-                    <IconComponent className="h-4 w-4 flex-shrink-0" />
+                    <Avatar className="h-8 w-8 flex-shrink-0">
+                      <AvatarImage src={room.image} alt={room.name} />
+                      <AvatarFallback className="bg-purple-500 text-white text-xs">
+                        {room.name.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
                     <div className="flex flex-col items-start flex-1 min-w-0">
                       <span className="truncate font-medium text-left">{room.name}</span>
                       <div className="flex items-center space-x-1 text-xs">
