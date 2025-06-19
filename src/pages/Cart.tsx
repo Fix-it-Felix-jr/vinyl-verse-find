@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ArrowLeft, Plus, Minus, X, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -73,6 +72,22 @@ const Cart = () => {
     setShowCheckoutModal(true);
   };
 
+  const addToCollection = (items: any[]) => {
+    const collection = JSON.parse(localStorage.getItem('userCollection') || '[]');
+    const newItems = items.map(item => ({
+      id: item.id,
+      title: item.title,
+      artist: item.artist,
+      price: item.price,
+      condition: item.condition,
+      year: item.year,
+      imageUrl: item.imageUrl,
+      purchaseDate: new Date().toISOString().split('T')[0]
+    }));
+    collection.push(...newItems);
+    localStorage.setItem('userCollection', JSON.stringify(collection));
+  };
+
   const handlePaymentSubmit = () => {
     toast({
       title: "Processing Payment",
@@ -80,6 +95,7 @@ const Cart = () => {
     });
     
     setTimeout(() => {
+      addToCollection(items);
       toast({
         title: "Purchase Successful!",
         description: `Thank you for your purchase of ${getTotalItems()} albums!`,
@@ -322,7 +338,7 @@ const Cart = () => {
               <Button 
                 variant="outline" 
                 onClick={() => setShowCheckoutModal(false)}
-                className="flex-1 border-slate-600 text-slate-300 hover:bg-slate-700"
+                className="flex-1 border-slate-600 text-slate-500 hover:bg-slate-700"
               >
                 Cancel
               </Button>

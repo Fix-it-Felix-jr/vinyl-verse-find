@@ -1,4 +1,3 @@
-
 import { CreditCard } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -157,6 +156,23 @@ const PaymentModal = ({ isOpen, onClose, album }: PaymentModalProps) => {
            Object.values(paymentDetails).every(value => value.trim() !== '');
   };
 
+  const addToCollection = (album: any) => {
+    const collection = JSON.parse(localStorage.getItem('userCollection') || '[]');
+    const albumId = `${album.title}-${album.artist}`.replace(/\s+/g, '-').toLowerCase();
+    const newItem = {
+      id: albumId,
+      title: album.title,
+      artist: album.artist,
+      price: album.price,
+      condition: 'Near Mint',
+      year: new Date().getFullYear(),
+      imageUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop',
+      purchaseDate: new Date().toISOString().split('T')[0]
+    };
+    collection.push(newItem);
+    localStorage.setItem('userCollection', JSON.stringify(collection));
+  };
+
   const handlePaymentSubmit = () => {
     if (!album || !isFormValid()) return;
 
@@ -174,6 +190,7 @@ const PaymentModal = ({ isOpen, onClose, album }: PaymentModalProps) => {
           variant: "destructive"
         });
       } else {
+        addToCollection(album);
         setIsProcessing(false);
         toast({
           title: "Purchase Successful!",
@@ -297,7 +314,7 @@ const PaymentModal = ({ isOpen, onClose, album }: PaymentModalProps) => {
             <Button 
               variant="outline" 
               onClick={onClose}
-              className="flex-1 border-slate-600 text-slate-300 hover:bg-slate-700"
+              className="flex-1 border-slate-600 text-slate-500 hover:bg-slate-700"
               disabled={isProcessing}
             >
               Cancel

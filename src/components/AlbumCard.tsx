@@ -1,4 +1,3 @@
-
 import { Star, Calendar, Eye, Play, ShoppingCart, Heart, Package } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,7 +19,7 @@ interface AlbumCardProps {
   isAuction?: boolean;
   bids?: number;
   productType?: 'vinyl' | 'cd' | 'cassette';
-  onClick?: () => void;
+  onAlbumClick?: () => void;
 }
 
 const AlbumCard = ({ 
@@ -36,7 +35,7 @@ const AlbumCard = ({
   isAuction = false,
   bids = 0,
   productType = 'vinyl',
-  onClick
+  onAlbumClick
 }: AlbumCardProps) => {
   const { setCurrentAlbum, setIsPlaying } = usePlayer();
   const { addToCart } = useCart();
@@ -87,8 +86,7 @@ const AlbumCard = ({
       price,
       condition,
       year,
-      imageUrl,
-      productType
+      imageUrl
     });
     
     toast({
@@ -130,10 +128,16 @@ const AlbumCard = ({
     }
   };
 
+  const handleCardClick = () => {
+    if (onAlbumClick) {
+      onAlbumClick();
+    }
+  };
+
   return (
     <div 
       className="group relative bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-750 transition-all duration-300 hover:scale-105 hover:shadow-xl border border-slate-700 hover:border-purple-500/50 cursor-pointer"
-      onClick={onClick}
+      onClick={handleCardClick}
     >
       <div className="relative">
         <img 

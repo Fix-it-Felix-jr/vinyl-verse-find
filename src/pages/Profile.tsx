@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { ArrowLeft, Edit, Heart, ShoppingBag, Star, Calendar, Gavel, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,6 +16,7 @@ const Profile = () => {
   );
   const [userListedAlbums, setUserListedAlbums] = useState<any[]>([]);
   const [userBids, setUserBids] = useState<any[]>([]);
+  const [userCollection, setUserCollection] = useState<any[]>([]);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [profileData, setProfileData] = useState({
     name: "John Doe",
@@ -36,6 +36,9 @@ const Profile = () => {
     
     const bids = JSON.parse(localStorage.getItem('userBids') || '[]');
     setUserBids(bids);
+
+    const collection = JSON.parse(localStorage.getItem('userCollection') || '[]');
+    setUserCollection(collection);
   }, []);
 
   const handleSaveProfile = (newData: any) => {
@@ -44,33 +47,7 @@ const Profile = () => {
     localStorage.setItem('userProfile', JSON.stringify(newData));
   };
 
-  const userCollection = [
-    {
-      title: "The Wall",
-      artist: "Pink Floyd",
-      condition: "Near Mint",
-      purchaseDate: "2023-12-15",
-      price: 55,
-      imageUrl: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=300&h=300&fit=crop"
-    },
-    {
-      title: "Abbey Road", 
-      artist: "The Beatles",
-      condition: "Mint",
-      purchaseDate: "2024-01-20",
-      price: 120,
-      imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop"
-    }
-  ];
-
-  const wishlist = [
-    {
-      title: "Led Zeppelin IV",
-      artist: "Led Zeppelin",
-      targetPrice: 50,
-      imageUrl: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=300&h=300&fit=crop"
-    }
-  ];
+  const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -134,7 +111,7 @@ const Profile = () => {
               key={tab.id}
               variant={activeTab === tab.id ? 'default' : 'ghost'}
               onClick={() => setActiveTab(tab.id as any)}
-              className={activeTab === tab.id ? 'bg-purple-600 hover:bg-purple-700' : 'text-slate-400 hover:text-white'}
+              className={activeTab === tab.id ? 'bg-purple-600 hover:bg-purple-700' : 'text-slate-400 hover:text-white hover:bg-slate-700'}
             >
               {tab.label}
             </Button>
@@ -163,19 +140,27 @@ const Profile = () => {
                 </div>
               </Card>
             ))}
+            {userCollection.length === 0 && (
+              <div className="col-span-full text-center py-12">
+                <p className="text-slate-400">No albums in your collection yet</p>
+                <Button className="mt-4 bg-purple-600 hover:bg-purple-700" onClick={() => navigate('/')}>
+                  Browse Albums
+                </Button>
+              </div>
+            )}
           </div>
         )}
 
         {activeTab === 'wishlist' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {wishlist.map((album, index) => (
+            {wishlist.map((album: any, index: number) => (
               <Card key={index} className="bg-slate-800 border-slate-700 overflow-hidden">
                 <img src={album.imageUrl} alt={album.title} className="w-full h-48 object-cover" />
                 <div className="p-4">
                   <h3 className="font-semibold text-white">{album.title}</h3>
                   <p className="text-slate-400 text-sm">{album.artist}</p>
                   <div className="mt-2">
-                    <span className="text-yellow-400 font-semibold">Target: ${album.targetPrice}</span>
+                    <span className="text-yellow-400 font-semibold">Target: ${album.price}</span>
                   </div>
                 </div>
               </Card>

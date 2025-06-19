@@ -1,4 +1,3 @@
-
 import { ShoppingCart, Heart, Gavel } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
@@ -33,6 +32,27 @@ const PurchaseSection = ({ album, onBuyNow, onPlaceBid }: PurchaseSectionProps) 
     const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
     setIsInWishlist(wishlist.some((item: any) => item.id === albumId));
   }, [albumId]);
+
+  const addToCollection = (album: any) => {
+    const collection = JSON.parse(localStorage.getItem('userCollection') || '[]');
+    const newItem = {
+      id: albumId,
+      title: album.title,
+      artist: album.artist,
+      price: album.price,
+      condition: album.condition,
+      year: album.year,
+      imageUrl: album.imageUrl,
+      purchaseDate: new Date().toISOString().split('T')[0]
+    };
+    collection.push(newItem);
+    localStorage.setItem('userCollection', JSON.stringify(collection));
+  };
+
+  const handleBuyNow = () => {
+    addToCollection(album);
+    onBuyNow();
+  };
 
   const handleAddToCart = () => {
     addToCart({
@@ -104,7 +124,7 @@ const PurchaseSection = ({ album, onBuyNow, onPlaceBid }: PurchaseSectionProps) 
           <div className="flex space-x-2">
             <Button 
               className="flex-1 bg-purple-600 hover:bg-purple-700"
-              onClick={onBuyNow}
+              onClick={handleBuyNow}
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
               Buy Now
