@@ -1,11 +1,12 @@
 
-import { Search, Bell, User, ShoppingCart } from "lucide-react";
+import { Search, User, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { Dispatch, SetStateAction } from "react";
+import NotificationPanel from "./NotificationPanel";
 
 interface HeaderProps {
   searchQuery?: string;
@@ -61,9 +62,9 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps) => {
             </div>
           </Button>
           
-          <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white hover:bg-slate-800">
-            <Bell className="h-5 w-5" />
-          </Button>
+          <div className="relative">
+            <NotificationPanel />
+          </div>
           
           <Button 
             variant="ghost" 

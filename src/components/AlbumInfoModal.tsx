@@ -1,3 +1,4 @@
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -178,7 +179,7 @@ const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
       return;
     }
 
-    // Store bid in localStorage
+    // Store bid in localStorage and update notifications
     const existingBids = JSON.parse(localStorage.getItem('userBids') || '[]');
     const newBid = {
       id: Date.now(),
@@ -193,6 +194,19 @@ const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
     
     existingBids.push(newBid);
     localStorage.setItem('userBids', JSON.stringify(existingBids));
+
+    // Add notification
+    const existingNotifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+    const bidNotification = {
+      id: Date.now(),
+      type: 'bid',
+      title: `Bid Placed - ${album.title}`,
+      message: `Your bid of $${bid} has been placed successfully`,
+      time: 'now',
+      read: false
+    };
+    existingNotifications.unshift(bidNotification);
+    localStorage.setItem('notifications', JSON.stringify(existingNotifications));
 
     toast({
       title: "Bid Placed Successfully!",

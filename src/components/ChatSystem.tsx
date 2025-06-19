@@ -55,7 +55,7 @@ const ChatSystem = () => {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-28 right-6 bg-purple-600 hover:bg-purple-700 rounded-full w-16 h-16 p-0 shadow-lg z-50"
+        className="fixed bottom-28 right-20 bg-purple-600 hover:bg-purple-700 rounded-full w-16 h-16 p-0 shadow-lg z-50"
       >
         <Users className="h-8 w-8" />
       </Button>
@@ -63,17 +63,17 @@ const ChatSystem = () => {
   }
 
   return (
-    <div className="fixed bottom-28 right-6 w-[480px] h-[600px] bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50">
-      <div className="flex items-center justify-between p-4 border-b border-slate-700">
+    <div className="fixed bottom-28 right-6 w-[480px] h-[600px] bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50 flex flex-col">
+      <div className="flex items-center justify-between p-4 border-b border-slate-700 flex-shrink-0">
         <h3 className="text-white font-semibold text-lg">Community Chat</h3>
         <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
           <X className="h-5 w-5 text-slate-400" />
         </Button>
       </div>
 
-      <div className="flex h-full">
+      <div className="flex flex-1 min-h-0">
         {/* Chat rooms sidebar */}
-        <div className="w-2/5 border-r border-slate-700 p-3">
+        <div className="w-2/5 border-r border-slate-700 p-3 flex-shrink-0">
           <div className="space-y-3">
             {chatRooms.map((room) => (
               <Button
@@ -98,8 +98,8 @@ const ChatSystem = () => {
         </div>
 
         {/* Chat messages */}
-        <div className="flex-1 flex flex-col">
-          <div className="flex-1 p-4 overflow-y-auto">
+        <div className="flex-1 flex flex-col min-w-0">
+          <div className="flex-1 p-4 overflow-y-auto min-h-0">
             <div className="space-y-4">
               {messages[activeChat].map((msg, index) => (
                 <div key={index} className="text-sm">
@@ -116,16 +116,16 @@ const ChatSystem = () => {
           </div>
 
           {/* Message input */}
-          <div className="p-4 border-t border-slate-700">
+          <div className="p-4 border-t border-slate-700 flex-shrink-0">
             <div className="flex space-x-2">
               <Input
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Type a message..."
-                className="bg-slate-700 border-slate-600 text-white text-sm"
+                className="bg-slate-700 border-slate-600 text-white text-sm flex-1"
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
               />
-              <Button size="sm" onClick={handleSendMessage} disabled={!message.trim()}>
+              <Button size="sm" onClick={handleSendMessage} disabled={!message.trim()} className="flex-shrink-0">
                 <Send className="h-4 w-4" />
               </Button>
             </div>
