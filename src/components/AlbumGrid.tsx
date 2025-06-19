@@ -25,12 +25,21 @@ const AlbumGrid = ({ searchQuery = "" }: AlbumGridProps) => {
       title: "The Dark Side of the Moon",
       artist: "Pink Floyd",
       price: 89,
-      condition: "Near Mint",
+      condition: "Like New",
       year: 1973,
       rating: 5,
       imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop",
       isPremium: true,
-      genre: "Rock"
+      genre: "Rock",
+      seller: {
+        id: "seller1",
+        name: "VinylVault Records",
+        rating: 4.8,
+        totalSales: 156,
+        profileImage: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face",
+        joinedYear: 2019,
+        location: "New York, NY"
+      }
     },
     {
       title: "Led Zeppelin IV",
@@ -40,7 +49,16 @@ const AlbumGrid = ({ searchQuery = "" }: AlbumGridProps) => {
       year: 1971,
       rating: 4,
       imageUrl: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=300&h=300&fit=crop",
-      genre: "Rock"
+      genre: "Rock",
+      seller: {
+        id: "seller2",
+        name: "RetroSpins",
+        rating: 4.6,
+        totalSales: 89,
+        profileImage: "https://images.unsplash.com/photo-1494790108755-2616b332e234?w=40&h=40&fit=crop&crop=face",
+        joinedYear: 2020,
+        location: "Los Angeles, CA"
+      }
     },
     {
       title: "Nevermind",
@@ -52,18 +70,36 @@ const AlbumGrid = ({ searchQuery = "" }: AlbumGridProps) => {
       imageUrl: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=300&h=300&fit=crop",
       isAuction: true,
       bids: 12,
-      genre: "Alternative"
+      genre: "Alternative",
+      seller: {
+        id: "seller3",
+        name: "GrungeCollector",
+        rating: 4.9,
+        totalSales: 203,
+        profileImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face",
+        joinedYear: 2018,
+        location: "Seattle, WA"
+      }
     },
     {
       title: "Abbey Road",
       artist: "The Beatles",
       price: 120,
-      condition: "Mint",
+      condition: "Perfect",
       year: 1969,
       rating: 5,
       imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop",
       isPremium: true,
-      genre: "Rock"
+      genre: "Rock",
+      seller: {
+        id: "seller4",
+        name: "Beatles Forever",
+        rating: 5.0,
+        totalSales: 45,
+        profileImage: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face",
+        joinedYear: 2021,
+        location: "Liverpool, UK"
+      }
     },
     {
       title: "Back in Black",
@@ -73,17 +109,35 @@ const AlbumGrid = ({ searchQuery = "" }: AlbumGridProps) => {
       year: 1980,
       rating: 4,
       imageUrl: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=300&h=300&fit=crop",
-      genre: "Rock"
+      genre: "Rock",
+      seller: {
+        id: "seller2",
+        name: "RetroSpins",
+        rating: 4.6,
+        totalSales: 89,
+        profileImage: "https://images.unsplash.com/photo-1494790108755-2616b332e234?w=40&h=40&fit=crop&crop=face",
+        joinedYear: 2020,
+        location: "Los Angeles, CA"
+      }
     },
     {
       title: "The Wall",
       artist: "Pink Floyd",
       price: 55,
-      condition: "Near Mint",
+      condition: "Like New",
       year: 1979,
       rating: 5,
       imageUrl: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=300&h=300&fit=crop",
-      genre: "Rock"
+      genre: "Rock",
+      seller: {
+        id: "seller1",
+        name: "VinylVault Records",
+        rating: 4.8,
+        totalSales: 156,
+        profileImage: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face",
+        joinedYear: 2019,
+        location: "New York, NY"
+      }
     },
     {
       title: "Master of Puppets",
@@ -95,18 +149,36 @@ const AlbumGrid = ({ searchQuery = "" }: AlbumGridProps) => {
       imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop",
       isAuction: true,
       bids: 8,
-      genre: "Metal"
+      genre: "Metal",
+      seller: {
+        id: "seller5",
+        name: "MetalMania",
+        rating: 4.7,
+        totalSales: 112,
+        profileImage: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=40&h=40&fit=crop&crop=face",
+        joinedYear: 2019,
+        location: "Chicago, IL"
+      }
     },
     {
       title: "Rumours",
       artist: "Fleetwood Mac",
       price: 75,
-      condition: "Near Mint",
+      condition: "Like New",
       year: 1977,
       rating: 5,
       imageUrl: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=300&h=300&fit=crop",
       isPremium: true,
-      genre: "Rock"
+      genre: "Rock",
+      seller: {
+        id: "seller6",
+        name: "ClassicVibes",
+        rating: 4.5,
+        totalSales: 67,
+        profileImage: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=40&h=40&fit=crop&crop=face",
+        joinedYear: 2020,
+        location: "Austin, TX"
+      }
     }
   ];
 

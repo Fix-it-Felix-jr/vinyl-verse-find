@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ArrowLeft, Upload, X, Check, ChevronRight } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowLeft, Upload, X, Check, ChevronRight, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -26,6 +26,7 @@ const SellAlbum = () => {
     image: null as File | null
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isDraft, setIsDraft] = useState(false);
 
   const steps = [
     { id: 1, title: "Album Details", description: "Basic information about your album" },
@@ -33,6 +34,45 @@ const SellAlbum = () => {
     { id: 3, title: "Photos & Description", description: "Add images and details" },
     { id: 4, title: "Review & Publish", description: "Final review before listing" }
   ];
+
+  // Load draft on component mount
+  useEffect(() => {
+    const savedDraft = localStorage.getItem('albumDraft');
+    if (savedDraft) {
+      const draft = JSON.parse(savedDraft);
+      setFormData(draft.formData);
+      setCurrentStep(draft.currentStep);
+      setImagePreview(draft.imagePreview);
+      setIsDraft(true);
+      
+      toast({
+        title: "Draft Loaded",
+        description: "Your previous draft has been loaded.",
+      });
+    }
+  }, []);
+
+  const saveDraft = () => {
+    const draft = {
+      formData,
+      currentStep,
+      imagePreview,
+      savedAt: new Date().toISOString()
+    };
+    
+    localStorage.setItem('albumDraft', JSON.stringify(draft));
+    setIsDraft(true);
+    
+    toast({
+      title: "Draft Saved",
+      description: "Your progress has been saved. You can continue later.",
+    });
+  };
+
+  const clearDraft = () => {
+    localStorage.removeItem('albumDraft');
+    setIsDraft(false);
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -56,7 +96,7 @@ const SellAlbum = () => {
       case 2:
         return formData.condition && formData.price;
       case 3:
-        return true; // Optional step
+        return true;
       case 4:
         return true;
       default:
@@ -106,6 +146,8 @@ const SellAlbum = () => {
     existingAlbums.push(newAlbum);
     localStorage.setItem('userAlbums', JSON.stringify(existingAlbums));
 
+    clearDraft();
+
     toast({
       title: "Album Listed Successfully!",
       description: "Your album has been added to the marketplace.",
@@ -151,7 +193,7 @@ const SellAlbum = () => {
 
               <div>
                 <Label className="text-white">Format *</Label>
-                <Select onValueChange={(value) => setFormData({ ...formData, format: value })}>
+                <Select value={formData.format} onValueChange={(value) => setFormData({ ...formData, format: value })}>
                   <SelectTrigger className="bg-slate-700 border-slate-600 text-white mt-2">
                     <SelectValue placeholder="Select format" />
                   </SelectTrigger>
@@ -200,13 +242,13 @@ const SellAlbum = () => {
             <div className="space-y-4">
               <div>
                 <Label className="text-white">Condition *</Label>
-                <Select onValueChange={(value) => setFormData({ ...formData, condition: value })}>
+                <Select value={formData.condition} onValueChange={(value) => setFormData({ ...formData, condition: value })}>
                   <SelectTrigger className="bg-slate-700 border-slate-600 text-white mt-2">
                     <SelectValue placeholder="Select the condition of your album" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Mint">Mint - Perfect condition</SelectItem>
-                    <SelectItem value="Near Mint">Near Mint - Excellent with minor wear</SelectItem>
+                    <SelectItem value="Perfect">Perfect - Like brand new</SelectItem>
+                    <SelectItem value="Like New">Like New - Excellent with minimal wear</SelectItem>
                     <SelectItem value="Very Good">Very Good - Some visible wear</SelectItem>
                     <SelectItem value="Good">Good - Noticeable wear but playable</SelectItem>
                     <SelectItem value="Fair">Fair - Significant wear</SelectItem>
@@ -351,14 +393,28 @@ const SellAlbum = () => {
       <Header />
       
       <div className="container mx-auto px-4 py-6 max-w-4xl">
-        <div className="flex items-center space-x-4 mb-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center space-x-4">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate('/')}
+              className="text-white hover:bg-slate-800"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Collection
+            </Button>
+            {isDraft && (
+              <Badge className="bg-blue-600 text-white">Draft Loaded</Badge>
+            )}
+          </div>
+          
           <Button 
-            variant="ghost" 
-            onClick={() => navigate('/')}
-            className="text-white hover:bg-slate-800"
+            variant="outline" 
+            onClick={saveDraft}
+            className="border-slate-600 text-slate-300 hover:bg-slate-700"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Collection
+            <Save className="h-4 w-4 mr-2" />
+            Save Draft
           </Button>
         </div>
 

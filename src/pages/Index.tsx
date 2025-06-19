@@ -7,6 +7,7 @@ import PlayerBar from "@/components/PlayerBar";
 import FeaturedSection from "@/components/FeaturedSection";
 import FloatingButtons from "@/components/FloatingButtons";
 import ChatSystem from "@/components/ChatSystem";
+import OnboardingTutorial from "@/components/OnboardingTutorial";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,6 +27,7 @@ const Index = () => {
       <PlayerBar />
       <FloatingButtons />
       <ChatSystem />
+      <OnboardingTutorial />
     </div>
   );
 };

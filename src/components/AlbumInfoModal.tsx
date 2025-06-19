@@ -1,10 +1,9 @@
-
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Star, Calendar, MapPin, Heart, ShoppingCart, Music, CreditCard, Gavel } from "lucide-react";
+import { Star, Calendar, MapPin, Heart, ShoppingCart, Music, CreditCard, Gavel, User, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useRef } from "react";
@@ -23,6 +22,15 @@ interface AlbumInfoModalProps {
     isPremium?: boolean;
     isAuction?: boolean;
     bids?: number;
+    seller?: {
+      id: string;
+      name: string;
+      rating: number;
+      totalSales: number;
+      profileImage: string;
+      joinedYear: number;
+      location: string;
+    };
   } | null;
 }
 
@@ -227,6 +235,51 @@ const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
                   </Badge>
                 )}
               </div>
+              
+              {/* Seller Information */}
+              {album.seller && (
+                <Card className="bg-slate-700 border-slate-600 p-4">
+                  <h4 className="text-white font-semibold mb-3 flex items-center space-x-2">
+                    <User className="h-4 w-4" />
+                    <span>Sold by</span>
+                  </h4>
+                  
+                  <div className="flex items-center space-x-3">
+                    <img 
+                      src={album.seller.profileImage} 
+                      alt={album.seller.name}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2">
+                        <h5 className="text-white font-medium">{album.seller.name}</h5>
+                        <Shield className="h-4 w-4 text-blue-400" />
+                      </div>
+                      
+                      <div className="flex items-center space-x-1 mt-1">
+                        {[...Array(5)].map((_, i) => (
+                          <Star 
+                            key={i} 
+                            className={`h-3 w-3 ${i < Math.floor(album.seller!.rating) ? 'text-yellow-400 fill-current' : 'text-slate-600'}`} 
+                          />
+                        ))}
+                        <span className="text-xs text-slate-400">({album.seller.rating})</span>
+                      </div>
+                      
+                      <p className="text-xs text-slate-400 mt-1">{album.seller.totalSales} sales • {album.seller.location}</p>
+                    </div>
+                    
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => navigate(`/seller/${album.seller?.id}`)}
+                      className="border-slate-500 text-slate-300 hover:bg-slate-600"
+                    >
+                      View Profile
+                    </Button>
+                  </div>
+                </Card>
+              )}
             </div>
             
             <div className="space-y-4">

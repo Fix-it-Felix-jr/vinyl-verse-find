@@ -1,43 +1,39 @@
 
-import React from "react";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { PlayerProvider } from "@/contexts/PlayerContext";
 import { FilterProvider } from "@/contexts/FilterContext";
+import { PlayerProvider } from "@/contexts/PlayerContext";
 import Index from "./pages/Index";
-import Profile from "./pages/Profile";
 import SellAlbum from "./pages/SellAlbum";
+import Profile from "./pages/Profile";
+import SellerProfile from "./pages/SellerProfile";
 import ArtistAlbums from "./pages/ArtistAlbums";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App: React.FC = () => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <BrowserRouter>
+      <FilterProvider>
         <PlayerProvider>
-          <FilterProvider>
+          <TooltipProvider>
             <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/sell" element={<SellAlbum />} />
-                <Route path="/artist/:artistName" element={<ArtistAlbums />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </FilterProvider>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/sell" element={<SellAlbum />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/seller/:sellerId" element={<SellerProfile />} />
+              <Route path="/artist/:artistId" element={<ArtistAlbums />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </TooltipProvider>
         </PlayerProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
-  );
-};
+      </FilterProvider>
+    </BrowserRouter>
+  </QueryClientProvider>
+);
 
 export default App;
