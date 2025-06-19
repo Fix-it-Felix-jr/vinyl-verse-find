@@ -1,5 +1,5 @@
 
-import { Search, User, ShoppingCart, Disc } from "lucide-react";
+import { Search, User, ShoppingCart, Disc, Gavel } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +21,12 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps) => {
     if (onSearchChange) {
       onSearchChange(e.target.value);
     }
+  };
+
+  // Get user bids count
+  const getUserBidsCount = () => {
+    const bids = JSON.parse(localStorage.getItem('userBids') || '[]');
+    return bids.filter((bid: any) => bid.status === 'active').length;
   };
 
   return (
@@ -49,6 +55,23 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps) => {
         </div>
         
         <div className="flex items-center space-x-4">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="text-slate-300 hover:text-white hover:bg-slate-800"
+            onClick={() => navigate('/profile?tab=auctions')}
+            title="My Bids"
+          >
+            <div className="relative">
+              <Gavel className="h-5 w-5" />
+              {getUserBidsCount() > 0 && (
+                <Badge className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs min-w-[1.25rem] h-5 flex items-center justify-center p-0">
+                  {getUserBidsCount()}
+                </Badge>
+              )}
+            </div>
+          </Button>
+          
           <Button 
             variant="ghost" 
             size="sm" 

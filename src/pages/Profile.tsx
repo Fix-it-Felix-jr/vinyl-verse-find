@@ -1,15 +1,20 @@
+
 import { useState, useEffect } from "react";
 import { ArrowLeft, Edit, Heart, ShoppingBag, Star, Calendar, Gavel, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
 import EditProfile from "@/components/EditProfile";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'collection' | 'wishlist' | 'selling' | 'auctions'>('collection');
+  const [searchParams] = useSearchParams();
+  const tabParam = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState<'collection' | 'wishlist' | 'selling' | 'auctions'>(
+    (tabParam as any) || 'collection'
+  );
   const [userListedAlbums, setUserListedAlbums] = useState<any[]>([]);
   const [userBids, setUserBids] = useState<any[]>([]);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
