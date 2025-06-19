@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import AlbumCard from "./AlbumCard";
 import AlbumInfoModal from "./AlbumInfoModal";
@@ -251,7 +250,7 @@ const AlbumGrid = ({ searchQuery = "" }: AlbumGridProps) => {
           <AlbumCard 
             key={`${album.title}-${album.artist}-${index}`} 
             {...album} 
-            onClick={() => handleAlbumClick(album)}
+            onAlbumClick={() => handleAlbumClick(album)}
           />
         ))}
       </div>
