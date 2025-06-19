@@ -16,7 +16,6 @@ const ArtistAlbums = () => {
   // Mock albums for Arctic Echoes - in a real app this would be fetched based on artistName
   const artistAlbums = [
     {
-      id: "arctic-echoes-frozen-waves",
       title: "Frozen Waves",
       artist: "Arctic Echoes",
       price: 45,
@@ -27,7 +26,6 @@ const ArtistAlbums = () => {
       genre: "Indie Rock"
     },
     {
-      id: "arctic-echoes-northern-lights",
       title: "Northern Lights",
       artist: "Arctic Echoes",
       price: 35,
@@ -38,7 +36,6 @@ const ArtistAlbums = () => {
       genre: "Indie Rock"
     },
     {
-      id: "arctic-echoes-ice-crystals",
       title: "Ice Crystals EP",
       artist: "Arctic Echoes",
       price: 25,
@@ -88,11 +85,11 @@ const ArtistAlbums = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {artistAlbums.map((album) => (
+          {artistAlbums.map((album, index) => (
             <AlbumCard 
-              key={album.id} 
-              album={album}
-              onAlbumClick={() => handleAlbumClick(album)}
+              key={`${album.title}-${album.artist}-${index}`} 
+              {...album} 
+              onClick={() => handleAlbumClick(album)}
             />
           ))}
         </div>
