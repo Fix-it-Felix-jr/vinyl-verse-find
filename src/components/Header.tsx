@@ -1,5 +1,5 @@
 
-import { Search, User, ShoppingCart } from "lucide-react";
+import { Search, User, ShoppingCart, Disc } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -26,19 +26,22 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps) => {
   return (
     <header className="bg-slate-900 border-b border-slate-700 px-6 py-4">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
-        <div className="flex items-center space-x-8">
+        <div className="flex items-center space-x-2">
+          <Disc className="h-8 w-8 text-purple-500" />
           <h1 
             className="text-2xl font-bold text-white cursor-pointer" 
             onClick={() => navigate('/')}
           >
-            VinylVault
+            RetroSpin
           </h1>
-          
-          <div className="relative max-w-md">
+        </div>
+        
+        <div className="flex-1 flex justify-center max-w-md mx-8">
+          <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
             <Input
               placeholder="Search albums, artists..."
-              className="pl-10 bg-slate-800 border-slate-700 text-white placeholder-slate-400 focus:ring-purple-500 focus:border-purple-500"
+              className="pl-10 bg-slate-800 border-slate-700 text-white placeholder-slate-400 focus:ring-purple-500 focus:border-purple-500 w-full"
               value={searchQuery}
               onChange={handleSearchChange}
             />

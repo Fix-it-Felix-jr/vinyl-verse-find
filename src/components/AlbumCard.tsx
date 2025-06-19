@@ -1,10 +1,10 @@
-
-import { Star, Calendar, Eye, Play, ShoppingCart } from "lucide-react";
+import { Star, Calendar, Eye, Play, ShoppingCart, Heart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { usePlayer } from "@/contexts/PlayerContext";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import { useState, useEffect } from "react";
 
 interface AlbumCardProps {
   id?: string;
@@ -38,6 +38,14 @@ const AlbumCard = ({
   const { setCurrentAlbum, setIsPlaying } = usePlayer();
   const { addToCart } = useCart();
   const { toast } = useToast();
+  const [isInWishlist, setIsInWishlist] = useState(false);
+
+  const albumId = id || `${title}-${artist}`.replace(/\s+/g, '-').toLowerCase();
+
+  useEffect(() => {
+    const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+    setIsInWishlist(wishlist.some((item: any) => item.id === albumId));
+  }, [albumId]);
 
   const handlePlayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -52,9 +60,8 @@ const AlbumCard = ({
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (isAuction) return; // Don't allow adding auction items to cart
+    if (isAuction) return;
     
-    const albumId = id || `${title}-${artist}`.replace(/\s+/g, '-').toLowerCase();
     addToCart({
       id: albumId,
       title,
@@ -69,6 +76,38 @@ const AlbumCard = ({
       title: "Added to Cart",
       description: `${title} by ${artist} has been added to your cart.`,
     });
+  };
+
+  const handleWishlistToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+    
+    if (isInWishlist) {
+      const updatedWishlist = wishlist.filter((item: any) => item.id !== albumId);
+      localStorage.setItem('wishlist', JSON.stringify(updatedWishlist));
+      setIsInWishlist(false);
+      toast({
+        title: "Removed from Wishlist",
+        description: `${title} by ${artist} has been removed from your wishlist.`,
+      });
+    } else {
+      const newItem = {
+        id: albumId,
+        title,
+        artist,
+        price,
+        condition,
+        year,
+        imageUrl
+      };
+      wishlist.push(newItem);
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      setIsInWishlist(true);
+      toast({
+        title: "Added to Wishlist",
+        description: `${title} by ${artist} has been added to your wishlist.`,
+      });
+    }
   };
 
   return (
@@ -112,6 +151,14 @@ const AlbumCard = ({
                 <ShoppingCart className="h-5 w-5" />
               </Button>
             )}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="bg-white/20 hover:bg-white/30 text-white rounded-full w-12 h-12 p-0"
+              onClick={handleWishlistToggle}
+            >
+              <Heart className={`h-5 w-5 ${isInWishlist ? 'fill-current text-red-400' : ''}`} />
+            </Button>
             <Eye className="h-8 w-8 text-white" />
           </div>
         </div>

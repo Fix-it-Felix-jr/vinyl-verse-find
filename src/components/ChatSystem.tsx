@@ -1,10 +1,7 @@
-
 import { useState } from "react";
-import { Users, Send, X } from "lucide-react";
+import { Users, Send, X, Hash, Music, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 const ChatSystem = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,9 +25,27 @@ const ChatSystem = () => {
   });
 
   const chatRooms = [
-    { id: 'general', name: 'General Discussion', members: 342, latest: 'Anyone selling Pink Floyd records?' },
-    { id: 'pink-floyd', name: 'Pink Floyd Fans', members: 89, latest: 'Just got The Wall on original pressing!' },
-    { id: 'vinyl-care', name: 'Vinyl Care Tips', members: 156, latest: 'Best cleaning solutions?' }
+    { 
+      id: 'general', 
+      name: 'General Discussion', 
+      members: 342, 
+      latest: 'Anyone selling Pink Floyd records?',
+      icon: Hash
+    },
+    { 
+      id: 'pink-floyd', 
+      name: 'Pink Floyd Fans', 
+      members: 89, 
+      latest: 'Just got The Wall on original pressing!',
+      icon: Music
+    },
+    { 
+      id: 'vinyl-care', 
+      name: 'Vinyl Care Tips', 
+      members: 156, 
+      latest: 'Best cleaning solutions?',
+      icon: Wrench
+    }
   ];
 
   const handleSendMessage = () => {
@@ -55,7 +70,7 @@ const ChatSystem = () => {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-28 right-20 bg-purple-600 hover:bg-purple-700 rounded-full w-16 h-16 p-0 shadow-lg z-50"
+        className="fixed top-6 right-6 bg-purple-600 hover:bg-purple-700 rounded-full w-16 h-16 p-0 shadow-lg z-50"
       >
         <Users className="h-8 w-8" />
       </Button>
@@ -63,7 +78,7 @@ const ChatSystem = () => {
   }
 
   return (
-    <div className="fixed bottom-28 right-6 w-[480px] h-[600px] bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50 flex flex-col">
+    <div className="fixed top-20 right-6 w-[480px] h-[600px] bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50 flex flex-col">
       <div className="flex items-center justify-between p-4 border-b border-slate-700 flex-shrink-0">
         <h3 className="text-white font-semibold text-lg">Community Chat</h3>
         <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
@@ -72,32 +87,36 @@ const ChatSystem = () => {
       </div>
 
       <div className="flex flex-1 min-h-0">
-        {/* Chat rooms sidebar */}
         <div className="w-2/5 border-r border-slate-700 p-3 flex-shrink-0">
           <div className="space-y-3">
-            {chatRooms.map((room) => (
-              <Button
-                key={room.id}
-                variant={activeChat === room.id ? "default" : "ghost"}
-                size="sm"
-                className={`w-full justify-start text-sm p-3 h-auto ${
-                  activeChat === room.id ? 'bg-purple-600' : 'text-slate-300'
-                }`}
-                onClick={() => setActiveChat(room.id as any)}
-              >
-                <div className="flex flex-col items-start w-full space-y-1">
-                  <span className="truncate font-medium text-left">{room.name}</span>
-                  <div className="flex items-center space-x-1 text-xs">
-                    <Users className="h-3 w-3" />
-                    <span>{room.members}</span>
+            {chatRooms.map((room) => {
+              const IconComponent = room.icon;
+              return (
+                <Button
+                  key={room.id}
+                  variant={activeChat === room.id ? "default" : "ghost"}
+                  size="sm"
+                  className={`w-full justify-start text-sm p-3 h-auto ${
+                    activeChat === room.id ? 'bg-purple-600' : 'text-slate-300'
+                  }`}
+                  onClick={() => setActiveChat(room.id as any)}
+                >
+                  <div className="flex items-center space-x-2 w-full">
+                    <IconComponent className="h-4 w-4 flex-shrink-0" />
+                    <div className="flex flex-col items-start flex-1 min-w-0">
+                      <span className="truncate font-medium text-left">{room.name}</span>
+                      <div className="flex items-center space-x-1 text-xs">
+                        <Users className="h-3 w-3" />
+                        <span>{room.members}</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </Button>
-            ))}
+                </Button>
+              );
+            })}
           </div>
         </div>
 
-        {/* Chat messages */}
         <div className="flex-1 flex flex-col min-w-0">
           <div className="flex-1 p-4 overflow-y-auto min-h-0">
             <div className="space-y-4">
@@ -115,7 +134,6 @@ const ChatSystem = () => {
             </div>
           </div>
 
-          {/* Message input */}
           <div className="p-4 border-t border-slate-700 flex-shrink-0">
             <div className="flex space-x-2">
               <Input

@@ -19,6 +19,23 @@ interface SellerInfoSectionProps {
 const SellerInfoSection = ({ seller }: SellerInfoSectionProps) => {
   const navigate = useNavigate();
 
+  const renderSellerImage = () => {
+    if (seller.name === "RetroSpins") {
+      return (
+        <div className="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-lg">
+          RS
+        </div>
+      );
+    }
+    return (
+      <img 
+        src={seller.profileImage} 
+        alt={seller.name}
+        className="w-12 h-12 rounded-full object-cover"
+      />
+    );
+  };
+
   return (
     <Card className="bg-slate-700 border-slate-600 p-4">
       <h4 className="text-white font-semibold mb-3 flex items-center space-x-2">
@@ -27,11 +44,7 @@ const SellerInfoSection = ({ seller }: SellerInfoSectionProps) => {
       </h4>
       
       <div className="flex items-center space-x-3">
-        <img 
-          src={seller.profileImage} 
-          alt={seller.name}
-          className="w-12 h-12 rounded-full object-cover"
-        />
+        {renderSellerImage()}
         <div className="flex-1">
           <div className="flex items-center space-x-2">
             <h5 className="text-white font-medium">{seller.name}</h5>
@@ -55,7 +68,7 @@ const SellerInfoSection = ({ seller }: SellerInfoSectionProps) => {
           size="sm" 
           variant="outline"
           onClick={() => navigate(`/seller/${seller.id}`)}
-          className="border-slate-500 text-slate-300 hover:bg-slate-600"
+          className="border-slate-500 text-slate-500 hover:bg-slate-600"
         >
           View Profile
         </Button>

@@ -3,6 +3,7 @@ import { ShoppingCart, Heart, Gavel } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import { useState, useEffect } from "react";
 
 interface PurchaseSectionProps {
   album: {
@@ -24,9 +25,16 @@ interface PurchaseSectionProps {
 const PurchaseSection = ({ album, onBuyNow, onPlaceBid }: PurchaseSectionProps) => {
   const { addToCart } = useCart();
   const { toast } = useToast();
+  const [isInWishlist, setIsInWishlist] = useState(false);
+
+  const albumId = album.id || `${album.title}-${album.artist}`.replace(/\s+/g, '-').toLowerCase();
+
+  useEffect(() => {
+    const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+    setIsInWishlist(wishlist.some((item: any) => item.id === albumId));
+  }, [albumId]);
 
   const handleAddToCart = () => {
-    const albumId = album.id || `${album.title}-${album.artist}`.replace(/\s+/g, '-').toLowerCase();
     addToCart({
       id: albumId,
       title: album.title,
@@ -41,6 +49,37 @@ const PurchaseSection = ({ album, onBuyNow, onPlaceBid }: PurchaseSectionProps) 
       title: "Added to Cart",
       description: `${album.title} by ${album.artist} has been added to your cart.`,
     });
+  };
+
+  const handleWishlistToggle = () => {
+    const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+    
+    if (isInWishlist) {
+      const updatedWishlist = wishlist.filter((item: any) => item.id !== albumId);
+      localStorage.setItem('wishlist', JSON.stringify(updatedWishlist));
+      setIsInWishlist(false);
+      toast({
+        title: "Removed from Wishlist",
+        description: `${album.title} by ${album.artist} has been removed from your wishlist.`,
+      });
+    } else {
+      const newItem = {
+        id: albumId,
+        title: album.title,
+        artist: album.artist,
+        price: album.price,
+        condition: album.condition,
+        year: album.year,
+        imageUrl: album.imageUrl
+      };
+      wishlist.push(newItem);
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      setIsInWishlist(true);
+      toast({
+        title: "Added to Wishlist",
+        description: `${album.title} by ${album.artist} has been added to your wishlist.`,
+      });
+    }
   };
 
   return (
@@ -73,12 +112,17 @@ const PurchaseSection = ({ album, onBuyNow, onPlaceBid }: PurchaseSectionProps) 
             <Button 
               variant="outline" 
               onClick={handleAddToCart}
-              className="border-slate-600 text-slate-300 hover:bg-slate-700"
+              className="border-slate-600 text-slate-500 hover:bg-slate-700"
             >
               Add to Cart
             </Button>
-            <Button variant="outline" size="sm" className="border-slate-600 text-slate-300 hover:bg-slate-700">
-              <Heart className="h-4 w-4" />
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className={`border-slate-600 hover:bg-slate-700 ${isInWishlist ? 'text-red-400' : 'text-slate-500'}`}
+              onClick={handleWishlistToggle}
+            >
+              <Heart className={`h-4 w-4 ${isInWishlist ? 'fill-current' : ''}`} />
             </Button>
           </div>
         </div>
