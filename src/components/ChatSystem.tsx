@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Users, Send, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -80,7 +79,7 @@ const ChatSystem = () => {
   }
 
   return (
-    <div className="fixed top-20 right-6 w-[480px] h-[600px] bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50 flex flex-col">
+    <div className="fixed top-20 right-6 w-[560px] h-[600px] bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50 flex flex-col">
       <div className="flex items-center justify-between p-4 border-b border-slate-700 flex-shrink-0">
         <h3 className="text-white font-semibold text-lg">Community Chat</h3>
         <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
