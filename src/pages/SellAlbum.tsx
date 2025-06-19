@@ -493,7 +493,7 @@ const SellAlbum = () => {
                 variant="outline" 
                 onClick={prevStep}
                 disabled={currentStep === 1}
-                className="border-slate-600 text-slate-200 hover:bg-slate-700"
+                className="border-slate-600 text-slate-500 hover:bg-slate-700"
               >
                 Previous
               </Button>
@@ -503,7 +503,7 @@ const SellAlbum = () => {
                   type="button" 
                   variant="outline" 
                   onClick={() => navigate('/')}
-                  className="border-slate-600 text-slate-200 hover:bg-slate-700"
+                  className="border-slate-600 text-slate-500 hover:bg-slate-700"
                 >
                   Cancel
                 </Button>
