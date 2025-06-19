@@ -433,7 +433,7 @@ const SellAlbum = () => {
             <Button 
               variant="outline" 
               onClick={saveDraft}
-              className="border-slate-600 text-slate-300 hover:bg-slate-700"
+              className="border-slate-600 text-slate-500 hover:bg-slate-700"
             >
               <Save className="h-4 w-4 mr-2" />
               Save Draft

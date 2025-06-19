@@ -7,11 +7,13 @@ import { Star, Calendar, MapPin, Heart, ShoppingCart, Music, CreditCard, Gavel, 
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useRef } from "react";
+import { useCart } from "@/contexts/CartContext";
 
 interface AlbumInfoModalProps {
   isOpen: boolean;
   onClose: () => void;
   album: {
+    id?: string;
     title: string;
     artist: string;
     price: number;
@@ -37,6 +39,7 @@ interface AlbumInfoModalProps {
 const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { addToCart } = useCart();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showBidModal, setShowBidModal] = useState(false);
   const [bidAmount, setBidAmount] = useState('');
@@ -56,6 +59,24 @@ const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
   const emailRef = useRef<HTMLInputElement>(null);
 
   if (!album) return null;
+
+  const handleAddToCart = () => {
+    const albumId = album.id || `${album.title}-${album.artist}`.replace(/\s+/g, '-').toLowerCase();
+    addToCart({
+      id: albumId,
+      title: album.title,
+      artist: album.artist,
+      price: album.price,
+      condition: album.condition,
+      year: album.year,
+      imageUrl: album.imageUrl
+    });
+    
+    toast({
+      title: "Added to Cart",
+      description: `${album.title} by ${album.artist} has been added to your cart.`,
+    });
+  };
 
   const formatCardNumber = (value: string) => {
     // Remove all non-digits
@@ -332,6 +353,13 @@ const AlbumInfoModal = ({ isOpen, onClose, album }: AlbumInfoModalProps) => {
                       >
                         <ShoppingCart className="h-4 w-4 mr-2" />
                         Buy Now
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        onClick={handleAddToCart}
+                        className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                      >
+                        Add to Cart
                       </Button>
                       <Button variant="outline" size="sm" className="border-slate-600 text-slate-300 hover:bg-slate-700">
                         <Heart className="h-4 w-4" />

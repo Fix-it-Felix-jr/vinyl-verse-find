@@ -1,10 +1,13 @@
 
-import { Star, Calendar, Eye, Play } from "lucide-react";
+import { Star, Calendar, Eye, Play, ShoppingCart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { usePlayer } from "@/contexts/PlayerContext";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface AlbumCardProps {
+  id?: string;
   title: string;
   artist: string;
   price: number;
@@ -19,6 +22,7 @@ interface AlbumCardProps {
 }
 
 const AlbumCard = ({ 
+  id,
   title, 
   artist, 
   price, 
@@ -32,6 +36,8 @@ const AlbumCard = ({
   onClick
 }: AlbumCardProps) => {
   const { setCurrentAlbum, setIsPlaying } = usePlayer();
+  const { addToCart } = useCart();
+  const { toast } = useToast();
 
   const handlePlayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -42,6 +48,27 @@ const AlbumCard = ({
     });
     setIsPlaying(true);
     console.log(`Now playing: ${title} by ${artist}`);
+  };
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isAuction) return; // Don't allow adding auction items to cart
+    
+    const albumId = id || `${title}-${artist}`.replace(/\s+/g, '-').toLowerCase();
+    addToCart({
+      id: albumId,
+      title,
+      artist,
+      price,
+      condition,
+      year,
+      imageUrl
+    });
+    
+    toast({
+      title: "Added to Cart",
+      description: `${title} by ${artist} has been added to your cart.`,
+    });
   };
 
   return (
@@ -75,6 +102,16 @@ const AlbumCard = ({
             >
               <Play className="h-6 w-6" />
             </Button>
+            {!isAuction && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="bg-white/20 hover:bg-white/30 text-white rounded-full w-12 h-12 p-0"
+                onClick={handleAddToCart}
+              >
+                <ShoppingCart className="h-5 w-5" />
+              </Button>
+            )}
             <Eye className="h-8 w-8 text-white" />
           </div>
         </div>
