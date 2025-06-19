@@ -1,4 +1,3 @@
-
 import { CreditCard } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -297,7 +296,7 @@ const PaymentModal = ({ isOpen, onClose, album }: PaymentModalProps) => {
             <Button 
               variant="outline" 
               onClick={onClose}
-              className="flex-1 border-slate-600 text-slate-300 hover:bg-slate-700"
+              className="flex-1 border-slate-600 text-slate-500 hover:bg-slate-700"
               disabled={isProcessing}
             >
               Cancel
