@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { ArrowLeft, Upload, X, Check, ChevronRight, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -74,6 +73,26 @@ const SellAlbum = () => {
   const clearDraft = () => {
     localStorage.removeItem('albumDraft');
     setIsDraft(false);
+    
+    // Reset form data
+    setFormData({
+      title: "",
+      artist: "",
+      year: "",
+      genre: "",
+      format: "",
+      condition: "",
+      price: "",
+      description: "",
+      image: null
+    });
+    setImagePreview(null);
+    setCurrentStep(1);
+    
+    toast({
+      title: "Draft Discarded",
+      description: "Your draft has been removed and the form has been reset.",
+    });
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -410,14 +429,26 @@ const SellAlbum = () => {
             )}
           </div>
           
-          <Button 
-            variant="outline" 
-            onClick={saveDraft}
-            className="border-slate-600 text-slate-300 hover:bg-slate-700"
-          >
-            <Save className="h-4 w-4 mr-2" />
-            Save Draft
-          </Button>
+          <div className="flex space-x-3">
+            <Button 
+              variant="outline" 
+              onClick={saveDraft}
+              className="border-slate-600 text-slate-300 hover:bg-slate-700"
+            >
+              <Save className="h-4 w-4 mr-2" />
+              Save Draft
+            </Button>
+            
+            {isDraft && (
+              <Button 
+                variant="outline" 
+                onClick={clearDraft}
+                className="border-red-600 text-red-400 hover:bg-red-900/20"
+              >
+                Discard Draft
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Progress Steps */}
@@ -462,7 +493,7 @@ const SellAlbum = () => {
                 variant="outline" 
                 onClick={prevStep}
                 disabled={currentStep === 1}
-                className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                className="border-slate-600 text-slate-200 hover:bg-slate-700"
               >
                 Previous
               </Button>
@@ -472,7 +503,7 @@ const SellAlbum = () => {
                   type="button" 
                   variant="outline" 
                   onClick={() => navigate('/')}
-                  className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                  className="border-slate-600 text-slate-200 hover:bg-slate-700"
                 >
                   Cancel
                 </Button>
