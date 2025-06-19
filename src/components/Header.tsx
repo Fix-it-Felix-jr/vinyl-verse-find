@@ -5,10 +5,22 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
+import { Dispatch, SetStateAction } from "react";
 
-const Header = () => {
+interface HeaderProps {
+  searchQuery?: string;
+  onSearchChange?: Dispatch<SetStateAction<string>>;
+}
+
+const Header = ({ searchQuery = "", onSearchChange }: HeaderProps) => {
   const navigate = useNavigate();
   const { getTotalItems } = useCart();
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onSearchChange) {
+      onSearchChange(e.target.value);
+    }
+  };
 
   return (
     <header className="bg-slate-900 border-b border-slate-700 px-6 py-4">
@@ -26,6 +38,8 @@ const Header = () => {
             <Input
               placeholder="Search albums, artists..."
               className="pl-10 bg-slate-800 border-slate-700 text-white placeholder-slate-400 focus:ring-purple-500 focus:border-purple-500"
+              value={searchQuery}
+              onChange={handleSearchChange}
             />
           </div>
         </div>
