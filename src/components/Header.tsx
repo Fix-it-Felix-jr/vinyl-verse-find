@@ -46,7 +46,7 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps) => {
           <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
             <Input
-              placeholder="Search albums, artists..."
+              placeholder="Search albums, artists, sellers..."
               className="pl-10 bg-slate-800 border-slate-700 text-white placeholder-slate-400 focus:ring-purple-500 focus:border-purple-500 w-full"
               value={searchQuery}
               onChange={handleSearchChange}

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import AlbumCard from "./AlbumCard";
 import AlbumInfoModal from "./AlbumInfoModal";
@@ -31,6 +32,7 @@ const AlbumGrid = ({ searchQuery = "" }: AlbumGridProps) => {
       imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop",
       isPremium: true,
       genre: "Rock",
+      productType: "vinyl",
       seller: {
         id: "seller1",
         name: "VinylVault Records",
@@ -50,6 +52,7 @@ const AlbumGrid = ({ searchQuery = "" }: AlbumGridProps) => {
       rating: 4,
       imageUrl: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=300&h=300&fit=crop",
       genre: "Rock",
+      productType: "cd",
       seller: {
         id: "seller2",
         name: "RetroSpins",
@@ -71,6 +74,7 @@ const AlbumGrid = ({ searchQuery = "" }: AlbumGridProps) => {
       isAuction: true,
       bids: 12,
       genre: "Alternative",
+      productType: "cassette",
       seller: {
         id: "seller3",
         name: "GrungeCollector",
@@ -91,6 +95,7 @@ const AlbumGrid = ({ searchQuery = "" }: AlbumGridProps) => {
       imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop",
       isPremium: true,
       genre: "Rock",
+      productType: "vinyl",
       seller: {
         id: "seller4",
         name: "Beatles Forever",
@@ -110,6 +115,7 @@ const AlbumGrid = ({ searchQuery = "" }: AlbumGridProps) => {
       rating: 4,
       imageUrl: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=300&h=300&fit=crop",
       genre: "Rock",
+      productType: "cd",
       seller: {
         id: "seller2",
         name: "RetroSpins",
@@ -129,6 +135,7 @@ const AlbumGrid = ({ searchQuery = "" }: AlbumGridProps) => {
       rating: 5,
       imageUrl: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=300&h=300&fit=crop",
       genre: "Rock",
+      productType: "vinyl",
       seller: {
         id: "seller1",
         name: "VinylVault Records",
@@ -150,6 +157,7 @@ const AlbumGrid = ({ searchQuery = "" }: AlbumGridProps) => {
       isAuction: true,
       bids: 8,
       genre: "Metal",
+      productType: "cassette",
       seller: {
         id: "seller5",
         name: "MetalMania",
@@ -170,6 +178,7 @@ const AlbumGrid = ({ searchQuery = "" }: AlbumGridProps) => {
       imageUrl: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=300&h=300&fit=crop",
       isPremium: true,
       genre: "Rock",
+      productType: "vinyl",
       seller: {
         id: "seller6",
         name: "ClassicVibes",
@@ -190,14 +199,15 @@ const AlbumGrid = ({ searchQuery = "" }: AlbumGridProps) => {
 
   // Filter albums based on selected filters AND search query
   const filteredAlbums = allAlbums.filter(album => {
-    // Search query filter
+    // Search query filter - now includes seller search
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       const matchesTitle = album.title.toLowerCase().includes(query);
       const matchesArtist = album.artist.toLowerCase().includes(query);
       const matchesGenre = album.genre?.toLowerCase().includes(query);
+      const matchesSeller = album.seller?.name.toLowerCase().includes(query);
       
-      if (!matchesTitle && !matchesArtist && !matchesGenre) {
+      if (!matchesTitle && !matchesArtist && !matchesGenre && !matchesSeller) {
         return false;
       }
     }

@@ -1,4 +1,5 @@
-import { Star, Calendar, Eye, Play, ShoppingCart, Heart } from "lucide-react";
+
+import { Star, Calendar, Eye, Play, ShoppingCart, Heart, Package } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { usePlayer } from "@/contexts/PlayerContext";
@@ -18,6 +19,7 @@ interface AlbumCardProps {
   isPremium?: boolean;
   isAuction?: boolean;
   bids?: number;
+  productType?: 'vinyl' | 'cd' | 'cassette';
   onClick?: () => void;
 }
 
@@ -33,6 +35,7 @@ const AlbumCard = ({
   isPremium = false,
   isAuction = false,
   bids = 0,
+  productType = 'vinyl',
   onClick
 }: AlbumCardProps) => {
   const { setCurrentAlbum, setIsPlaying } = usePlayer();
@@ -46,6 +49,21 @@ const AlbumCard = ({
     const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
     setIsInWishlist(wishlist.some((item: any) => item.id === albumId));
   }, [albumId]);
+
+  const getProductTypeInfo = (type: string) => {
+    switch (type) {
+      case 'vinyl':
+        return { label: 'Vinyl Record', color: 'bg-purple-600', icon: '💿' };
+      case 'cd':
+        return { label: 'Compact Disc', color: 'bg-blue-600', icon: '💽' };
+      case 'cassette':
+        return { label: 'Cassette Tape', color: 'bg-orange-600', icon: '📼' };
+      default:
+        return { label: 'Vinyl Record', color: 'bg-purple-600', icon: '💿' };
+    }
+  };
+
+  const productInfo = getProductTypeInfo(productType);
 
   const handlePlayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -69,7 +87,8 @@ const AlbumCard = ({
       price,
       condition,
       year,
-      imageUrl
+      imageUrl,
+      productType
     });
     
     toast({
@@ -98,7 +117,8 @@ const AlbumCard = ({
         price,
         condition,
         year,
-        imageUrl
+        imageUrl,
+        productType
       };
       wishlist.push(newItem);
       localStorage.setItem('wishlist', JSON.stringify(wishlist));
@@ -121,8 +141,11 @@ const AlbumCard = ({
           alt={`${title} by ${artist}`}
           className="w-full h-48 object-cover group-hover:brightness-110 transition-all"
         />
+        <Badge className={`absolute top-2 left-2 ${productInfo.color} text-white font-semibold text-xs`}>
+          {productInfo.icon} {productInfo.label}
+        </Badge>
         {isPremium && (
-          <Badge className="absolute top-2 left-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-semibold">
+          <Badge className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-semibold">
             Premium
           </Badge>
         )}
