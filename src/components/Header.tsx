@@ -64,7 +64,7 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps) => {
           >
             <Gavel className="h-5 w-5" />
             {getUserBidsCount() > 0 && (
-              <Badge className="absolute -top-1 -right-1 bg-orange-600 text-white text-xs min-w-[1.25rem] h-5 flex items-center justify-center p-0">
+              <Badge className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs min-w-[1.25rem] h-5 flex items-center justify-center p-0">
                 {getUserBidsCount()}
               </Badge>
             )}
