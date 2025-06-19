@@ -89,7 +89,7 @@ const ArtistAlbums = () => {
             <AlbumCard 
               key={`${album.title}-${album.artist}-${index}`} 
               {...album} 
-              onClick={() => handleAlbumClick(album)}
+              onAlbumClick={() => handleAlbumClick(album)}
             />
           ))}
         </div>
