@@ -26,10 +26,10 @@ const AiAssistant = () => {
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button
-          className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white rounded-full w-10 h-10 p-0 shadow-lg hover:shadow-xl transition-all duration-300 ml-auto"
+          className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white rounded-full w-15 h-15 p-0 shadow-lg hover:shadow-xl transition-all duration-300 ml-auto"
           title="AI Music Assistant"
         >
-          <MessageCircle className="h-4 w-4" />
+          <MessageCircle className="h-6 w-6" />
         </Button>
       </PopoverTrigger>
       <PopoverContent 

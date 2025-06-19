@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { useState } from "react";
 import { usePlayer } from "@/contexts/PlayerContext";
-import AiAssistant from "./AiAssistant";
 
 const PlayerBar = () => {
   const { currentAlbum, isPlaying, setIsPlaying } = usePlayer();
@@ -75,7 +74,7 @@ const PlayerBar = () => {
           </div>
         </div>
 
-        {/* Volume and AI Assistant */}
+        {/* Volume */}
         <div className="flex items-center space-x-4 flex-1 justify-end">
           <div className="flex items-center space-x-2">
             <Volume2 className="h-4 w-4 text-slate-400" />
@@ -98,11 +97,6 @@ const PlayerBar = () => {
                 className="w-24 inverted-volume"
               />
             </div>
-          </div>
-          
-          {/* AI Assistant positioned at extreme right with more padding */}
-          <div className="pr-6">
-            <AiAssistant />
           </div>
         </div>
       </div>
