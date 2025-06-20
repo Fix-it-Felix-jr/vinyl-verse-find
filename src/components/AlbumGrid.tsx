@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import AlbumCard from "./AlbumCard";
 import AlbumInfoModal from "./AlbumInfoModal";
@@ -190,10 +191,29 @@ const AlbumGrid = ({ searchQuery = "" }: AlbumGridProps) => {
     }
   ];
 
-  // Load albums on component mount
+  // Load albums and update prices based on bids
   useEffect(() => {
     const userAlbums = JSON.parse(localStorage.getItem('userAlbums') || '[]');
-    setAllAlbums([...defaultAlbums, ...userAlbums]);
+    const userBids = JSON.parse(localStorage.getItem('userBids') || '[]');
+    
+    // Update default albums with current bid prices
+    const updatedDefaultAlbums = defaultAlbums.map(album => {
+      // Find the highest bid for this album
+      const albumBids = userBids.filter((bid: any) => 
+        bid.albumTitle === album.title && 
+        bid.albumArtist === album.artist &&
+        bid.status === 'active'
+      );
+      
+      if (albumBids.length > 0) {
+        const highestBid = Math.max(...albumBids.map((bid: any) => bid.bidAmount));
+        return { ...album, price: highestBid };
+      }
+      
+      return album;
+    });
+    
+    setAllAlbums([...updatedDefaultAlbums, ...userAlbums]);
   }, []);
 
   // Filter albums based on selected filters AND search query

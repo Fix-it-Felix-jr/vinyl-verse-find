@@ -1,3 +1,4 @@
+
 import { ShoppingCart, Heart, Gavel } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
@@ -25,13 +26,33 @@ const PurchaseSection = ({ album, onBuyNow, onPlaceBid }: PurchaseSectionProps) 
   const { addToCart } = useCart();
   const { toast } = useToast();
   const [isInWishlist, setIsInWishlist] = useState(false);
+  const [currentPrice, setCurrentPrice] = useState(album.price);
 
   const albumId = album.id || `${album.title}-${album.artist}`.replace(/\s+/g, '-').toLowerCase();
 
   useEffect(() => {
     const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
     setIsInWishlist(wishlist.some((item: any) => item.id === albumId));
-  }, [albumId]);
+
+    // Update current price based on bids for auction items
+    if (album.isAuction) {
+      const userBids = JSON.parse(localStorage.getItem('userBids') || '[]');
+      const albumBids = userBids.filter((bid: any) => 
+        bid.albumTitle === album.title && 
+        bid.albumArtist === album.artist &&
+        bid.status === 'active'
+      );
+      
+      if (albumBids.length > 0) {
+        const highestBid = Math.max(...albumBids.map((bid: any) => bid.bidAmount));
+        setCurrentPrice(highestBid);
+      } else {
+        setCurrentPrice(album.price);
+      }
+    } else {
+      setCurrentPrice(album.price);
+    }
+  }, [albumId, album]);
 
   const addToCollection = (album: any) => {
     const collection = JSON.parse(localStorage.getItem('userCollection') || '[]');
@@ -106,7 +127,7 @@ const PurchaseSection = ({ album, onBuyNow, onPlaceBid }: PurchaseSectionProps) 
     <div className="pt-4 border-t border-slate-700">
       {album.isAuction ? (
         <div className="space-y-2">
-          <p className="text-2xl font-bold text-green-400">${album.price}</p>
+          <p className="text-2xl font-bold text-green-400">${currentPrice}</p>
           <p className="text-sm text-slate-400">{album.bids} bids</p>
           <Button 
             className="w-full bg-green-600 hover:bg-green-700"
@@ -119,7 +140,7 @@ const PurchaseSection = ({ album, onBuyNow, onPlaceBid }: PurchaseSectionProps) 
       ) : (
         <div className="space-y-2">
           <p className={`text-2xl font-bold ${album.isPremium ? 'text-yellow-400' : 'text-white'}`}>
-            ${album.price}
+            ${currentPrice}
           </p>
           <div className="flex space-x-2">
             <Button 
