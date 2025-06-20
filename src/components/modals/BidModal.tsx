@@ -1,10 +1,11 @@
 
+
 import { Gavel } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface BidModalProps {
   isOpen: boolean;
@@ -23,6 +24,14 @@ const BidModal = ({
   album
 }: BidModalProps) => {
   const [bidAmount, setBidAmount] = useState("");
+  const [currentPrice, setCurrentPrice] = useState(album?.price || 0);
+
+  // Update current price when album prop changes
+  useEffect(() => {
+    if (album) {
+      setCurrentPrice(album.price);
+    }
+  }, [album]);
 
   const handleSubmitBid = () => {
     if (!album) return;
@@ -44,9 +53,9 @@ const BidModal = ({
       return;
     }
     
-    if (bid <= album.price) {
+    if (bid <= currentPrice) {
       toast.error("Invalid Bid", {
-        description: `Your bid must be higher than the current price of $${album.price}`
+        description: `Your bid must be higher than the current price of $${currentPrice}`
       });
       return;
     }
@@ -58,7 +67,7 @@ const BidModal = ({
       albumTitle: album.title,
       albumArtist: album.artist,
       albumImageUrl: album.imageUrl,
-      currentPrice: album.price,
+      currentPrice: currentPrice,
       bidAmount: bid,
       bidDate: new Date().toISOString(),
       status: 'active'
@@ -87,17 +96,19 @@ const BidModal = ({
     existingNotifications.unshift(bidNotification);
     localStorage.setItem('notifications', JSON.stringify(existingNotifications));
 
+    // Update the current price in the modal
+    setCurrentPrice(bid);
+
     toast.success("Bid Placed Successfully!", {
       description: `Your bid of $${bid} for ${album.title} has been placed.`
     });
 
-    onClose();
     setBidAmount('');
   };
 
   if (!album) return null;
 
-  const minBid = album.price + 1;
+  const minBid = currentPrice + 1;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -113,7 +124,7 @@ const BidModal = ({
           <div className="bg-slate-700 p-4 rounded-lg">
             <h4 className="text-white font-semibold">{album.title}</h4>
             <p className="text-slate-300 text-sm">{album.artist}</p>
-            <p className="text-green-400 font-bold">Current Price: ${album.price}</p>
+            <p className="text-green-400 font-bold">Current Price: ${currentPrice}</p>
           </div>
           
           <div>
@@ -155,3 +166,4 @@ const BidModal = ({
 };
 
 export default BidModal;
+
