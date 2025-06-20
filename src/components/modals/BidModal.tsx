@@ -1,9 +1,11 @@
+
 import { Gavel } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { useState } from "react";
+
 interface BidModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -14,41 +16,37 @@ interface BidModalProps {
     imageUrl: string;
   } | null;
 }
+
 const BidModal = ({
   isOpen,
   onClose,
   album
 }: BidModalProps) => {
-  const {
-    toast
-  } = useToast();
   const [bidAmount, setBidAmount] = useState("");
+
   const handleSubmitBid = () => {
     if (!album) return;
+    
     const bid = parseFloat(bidAmount);
 
     // Enhanced validation
     if (!bid || isNaN(bid)) {
-      toast({
-        title: "Invalid Bid",
-        description: "Please enter a valid number",
-        variant: "destructive"
+      toast.error("Invalid Bid", {
+        description: "Please enter a valid number"
       });
       return;
     }
+    
     if (bid > 99999) {
-      toast({
-        title: "Bid Too High",
-        description: "Maximum bid amount is $99,999",
-        variant: "destructive"
+      toast.error("Bid Too High", {
+        description: "Maximum bid amount is $99,999"
       });
       return;
     }
+    
     if (bid <= album.price) {
-      toast({
-        title: "Invalid Bid",
-        description: `Your bid must be higher than the current price of $${album.price}`,
-        variant: "destructive"
+      toast.error("Invalid Bid", {
+        description: `Your bid must be higher than the current price of $${album.price}`
       });
       return;
     }
@@ -88,16 +86,21 @@ const BidModal = ({
     };
     existingNotifications.unshift(bidNotification);
     localStorage.setItem('notifications', JSON.stringify(existingNotifications));
-    toast({
-      title: "Bid Placed Successfully!",
+
+    toast.success("Bid Placed Successfully!", {
       description: `Your bid of $${bid} for ${album.title} has been placed.`
     });
+
     onClose();
     setBidAmount('');
   };
+
   if (!album) return null;
+
   const minBid = album.price + 1;
-  return <Dialog open={isOpen} onOpenChange={onClose}>
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md bg-slate-800 border-slate-700">
         <DialogHeader>
           <DialogTitle className="text-white text-xl flex items-center space-x-2">
@@ -115,22 +118,40 @@ const BidModal = ({
           
           <div>
             <label className="block text-sm font-medium mb-1 text-slate-500">Your Bid Amount</label>
-            <Input type="number" placeholder={`Minimum: $${minBid}`} value={bidAmount} onChange={e => setBidAmount(e.target.value)} className="bg-slate-700 border-slate-600 text-white" step="0.01" min={minBid} max={99999} />
+            <Input
+              type="number"
+              placeholder={`Minimum: $${minBid}`}
+              value={bidAmount}
+              onChange={(e) => setBidAmount(e.target.value)}
+              className="bg-slate-700 border-slate-600 text-white"
+              step="0.01"
+              min={minBid}
+              max={99999}
+            />
             <p className="text-xs text-slate-400 mt-1">
               Minimum bid: ${minBid} • Maximum bid: $99,999
             </p>
           </div>
           
           <div className="flex space-x-3 pt-4">
-            <Button variant="outline" onClick={onClose} className="flex-1 border-slate-600 hover:bg-slate-700 text-slate-50">
+            <Button
+              variant="outline"
+              onClick={onClose}
+              className="flex-1 border-slate-600 hover:bg-slate-700 text-slate-50"
+            >
               Cancel
             </Button>
-            <Button onClick={handleSubmitBid} className="flex-1 bg-green-600 hover:bg-green-700">
+            <Button
+              onClick={handleSubmitBid}
+              className="flex-1 bg-green-600 hover:bg-green-700"
+            >
               Place Bid
             </Button>
           </div>
         </div>
       </DialogContent>
-    </Dialog>;
+    </Dialog>
+  );
 };
+
 export default BidModal;
