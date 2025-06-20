@@ -1,5 +1,5 @@
 
-import { Star, Calendar, Package } from "lucide-react";
+import { Star, Calendar, Package, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface AlbumDetailsSectionProps {
@@ -31,6 +31,13 @@ const AlbumDetailsSection = ({ album }: AlbumDetailsSectionProps) => {
   };
 
   const productInfo = getProductTypeInfo(album.productType || 'vinyl');
+
+  // Generate auction end time (7 days from now for demo purposes)
+  const getAuctionEndTime = () => {
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + 7);
+    return endDate.toLocaleDateString() + ' at ' + endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
 
   return (
     <div className="space-y-4">
@@ -77,6 +84,12 @@ const AlbumDetailsSection = ({ album }: AlbumDetailsSectionProps) => {
           <Package className="h-4 w-4" />
           <span>Condition: {album.condition}</span>
         </div>
+        {album.isAuction && (
+          <div className="flex items-center space-x-2 text-orange-300">
+            <Clock className="h-4 w-4" />
+            <span>Auction ends: {getAuctionEndTime()}</span>
+          </div>
+        )}
       </div>
       
       <div className="pt-4 border-t border-slate-700">

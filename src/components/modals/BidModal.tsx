@@ -25,7 +25,27 @@ const BidModal = ({ isOpen, onClose, album }: BidModalProps) => {
     if (!album) return;
     
     const bid = parseFloat(bidAmount);
-    if (!bid || bid <= album.price) {
+    
+    // Enhanced validation
+    if (!bid || isNaN(bid)) {
+      toast({
+        title: "Invalid Bid",
+        description: "Please enter a valid number",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (bid > 99999) {
+      toast({
+        title: "Bid Too High",
+        description: "Maximum bid amount is $99,999",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (bid <= album.price) {
       toast({
         title: "Invalid Bid",
         description: `Your bid must be higher than the current price of $${album.price}`,
@@ -49,6 +69,14 @@ const BidModal = ({ isOpen, onClose, album }: BidModalProps) => {
     
     existingBids.push(newBid);
     localStorage.setItem('userBids', JSON.stringify(existingBids));
+
+    // Update the album's current price to reflect the new bid
+    const userAlbums = JSON.parse(localStorage.getItem('userAlbums') || '[]');
+    const albumIndex = userAlbums.findIndex((a: any) => a.title === album.title && a.artist === album.artist);
+    if (albumIndex !== -1) {
+      userAlbums[albumIndex].price = bid;
+      localStorage.setItem('userAlbums', JSON.stringify(userAlbums));
+    }
 
     // Add notification
     const existingNotifications = JSON.parse(localStorage.getItem('notifications') || '[]');
@@ -74,6 +102,8 @@ const BidModal = ({ isOpen, onClose, album }: BidModalProps) => {
 
   if (!album) return null;
 
+  const minBid = album.price + 1;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md bg-slate-800 border-slate-700">
@@ -95,15 +125,16 @@ const BidModal = ({ isOpen, onClose, album }: BidModalProps) => {
             <label className="block text-sm font-medium text-white mb-1">Your Bid Amount</label>
             <Input
               type="number"
-              placeholder={`Minimum: $${album.price + 1}`}
+              placeholder={`Minimum: $${minBid}`}
               value={bidAmount}
               onChange={(e) => setBidAmount(e.target.value)}
               className="bg-slate-700 border-slate-600 text-white"
               step="0.01"
-              min={album.price + 1}
+              min={minBid}
+              max={99999}
             />
             <p className="text-xs text-slate-400 mt-1">
-              Your bid must be at least $1 higher than the current price
+              Minimum bid: ${minBid} • Maximum bid: $99,999
             </p>
           </div>
           
