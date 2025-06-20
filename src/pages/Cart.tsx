@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Plus, Minus, X, CreditCard } from "lucide-react";
+import { ArrowLeft, Plus, Minus, X, CreditCard, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,8 @@ const Cart = () => {
     name: '',
     email: ''
   });
+
+  const userCollection = JSON.parse(localStorage.getItem('userCollection') || '[]');
 
   const formatCardNumber = (value: string) => {
     const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
@@ -113,7 +115,7 @@ const Cart = () => {
     }, 2000);
   };
 
-  if (items.length === 0) {
+  if (items.length === 0 && userCollection.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <Header />
@@ -150,7 +152,7 @@ const Cart = () => {
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <Header />
         
-        <div className="container mx-auto px-4 py-6 max-w-4xl">
+        <div className="container mx-auto px-4 py-6 max-w-4xl pb-24">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-4">
               <Button 
@@ -164,100 +166,138 @@ const Cart = () => {
               <h1 className="text-2xl font-semibold text-white">Shopping Cart ({getTotalItems()} items)</h1>
             </div>
             
-            <Button 
-              variant="outline" 
-              onClick={clearCart}
-              className="border-red-600 text-red-400 hover:bg-red-900/20"
-            >
-              Clear Cart
-            </Button>
+            {items.length > 0 && (
+              <Button 
+                variant="outline" 
+                onClick={clearCart}
+                className="border-red-600 text-red-400 hover:bg-red-900/20"
+              >
+                Clear Cart
+              </Button>
+            )}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-4">
-              {items.map((item) => (
-                <Card key={item.id} className="bg-slate-800 border-slate-700 p-4">
-                  <div className="flex items-center space-x-4">
-                    <img 
-                      src={item.imageUrl} 
-                      alt={`${item.title} by ${item.artist}`}
-                      className="w-20 h-20 object-cover rounded"
-                    />
-                    
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-white">{item.title}</h3>
-                      <p className="text-slate-300 text-sm">{item.artist}</p>
-                      <p className="text-slate-400 text-xs">{item.year} • {item.condition}</p>
-                    </div>
-                    
-                    <div className="flex items-center space-x-3">
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          className="border-slate-600 text-slate-300 hover:bg-slate-700 w-8 h-8 p-0"
-                        >
-                          <Minus className="h-3 w-3" />
-                        </Button>
-                        <span className="text-white font-medium w-8 text-center">{item.quantity}</span>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="border-slate-600 text-slate-300 hover:bg-slate-700 w-8 h-8 p-0"
-                        >
-                          <Plus className="h-3 w-3" />
-                        </Button>
+          {items.length > 0 && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+              <div className="lg:col-span-2 space-y-4">
+                {items.map((item) => (
+                  <Card key={item.id} className="bg-slate-800 border-slate-700 p-4">
+                    <div className="flex items-center space-x-4">
+                      <img 
+                        src={item.imageUrl} 
+                        alt={`${item.title} by ${item.artist}`}
+                        className="w-20 h-20 object-cover rounded"
+                      />
+                      
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-white">{item.title}</h3>
+                        <p className="text-slate-300 text-sm">{item.artist}</p>
+                        <p className="text-slate-400 text-xs">{item.year} • {item.condition}</p>
                       </div>
                       
-                      <p className="text-white font-semibold min-w-[60px]">${(item.price * item.quantity).toFixed(2)}</p>
-                      
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeFromCart(item.id)}
-                        className="text-red-400 hover:bg-red-900/20 w-8 h-8 p-0"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
+                      <div className="flex items-center space-x-3">
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            className="border-slate-600 text-slate-300 hover:bg-slate-700 w-8 h-8 p-0"
+                          >
+                            <Minus className="h-3 w-3" />
+                          </Button>
+                          <span className="text-white font-medium w-8 text-center">{item.quantity}</span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            className="border-slate-600 text-slate-300 hover:bg-slate-700 w-8 h-8 p-0"
+                          >
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                        </div>
+                        
+                        <p className="text-white font-semibold min-w-[60px]">${(item.price * item.quantity).toFixed(2)}</p>
+                        
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeFromCart(item.id)}
+                          className="text-red-400 hover:bg-red-900/20 w-8 h-8 p-0"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-            
-            <div className="lg:col-span-1">
-              <Card className="bg-slate-800 border-slate-700 p-6 sticky top-6">
-                <h3 className="text-lg font-semibold text-white mb-4">Order Summary</h3>
-                
-                <div className="space-y-3 mb-4">
-                  <div className="flex justify-between text-slate-300">
-                    <span>Subtotal ({getTotalItems()} items)</span>
-                    <span>${getTotalPrice().toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-slate-300">
-                    <span>Shipping</span>
-                    <span>Free</span>
-                  </div>
-                  <div className="border-t border-slate-700 pt-3">
-                    <div className="flex justify-between text-white font-semibold text-lg">
-                      <span>Total</span>
+                  </Card>
+                ))}
+              </div>
+              
+              <div className="lg:col-span-1">
+                <Card className="bg-slate-800 border-slate-700 p-6 sticky top-6">
+                  <h3 className="text-lg font-semibold text-white mb-4">Order Summary</h3>
+                  
+                  <div className="space-y-3 mb-4">
+                    <div className="flex justify-between text-slate-300">
+                      <span>Subtotal ({getTotalItems()} items)</span>
                       <span>${getTotalPrice().toFixed(2)}</span>
                     </div>
+                    <div className="flex justify-between text-slate-300">
+                      <span>Shipping</span>
+                      <span>Free</span>
+                    </div>
+                    <div className="border-t border-slate-700 pt-3">
+                      <div className="flex justify-between text-white font-semibold text-lg">
+                        <span>Total</span>
+                        <span>${getTotalPrice().toFixed(2)}</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                
-                <Button 
-                  onClick={handleCheckout}
-                  className="w-full bg-purple-600 hover:bg-purple-700"
-                >
-                  <CreditCard className="h-4 w-4 mr-2" />
-                  Proceed to Checkout
-                </Button>
-              </Card>
+                  
+                  <Button 
+                    onClick={handleCheckout}
+                    className="w-full bg-purple-600 hover:bg-purple-700"
+                  >
+                    <CreditCard className="h-4 w-4 mr-2" />
+                    Proceed to Checkout
+                  </Button>
+                </Card>
+              </div>
             </div>
-          </div>
+          )}
+
+          {userCollection.length > 0 && (
+            <div>
+              <div className="flex items-center space-x-3 mb-6">
+                <Package className="h-6 w-6 text-green-400" />
+                <h2 className="text-2xl font-semibold text-white">Your Purchased Albums ({userCollection.length})</h2>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {userCollection.map((item: any) => (
+                  <Card key={item.id} className="bg-slate-800 border-slate-700 p-4">
+                    <div className="flex items-center space-x-4">
+                      <img 
+                        src={item.imageUrl} 
+                        alt={`${item.title} by ${item.artist}`}
+                        className="w-16 h-16 object-cover rounded"
+                      />
+                      
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-white truncate">{item.title}</h3>
+                        <p className="text-slate-300 text-sm truncate">{item.artist}</p>
+                        <p className="text-slate-400 text-xs">{item.year} • {item.condition}</p>
+                        <p className="text-green-400 text-xs">Purchased: {item.purchaseDate}</p>
+                      </div>
+                      
+                      <div className="text-right">
+                        <p className="text-white font-semibold">${item.price}</p>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
