@@ -114,7 +114,7 @@ const BidModal = ({
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-white mb-1">Your Bid Amount</label>
+            <label className="block text-sm font-medium mb-1 text-slate-500">Your Bid Amount</label>
             <Input type="number" placeholder={`Minimum: $${minBid}`} value={bidAmount} onChange={e => setBidAmount(e.target.value)} className="bg-slate-700 border-slate-600 text-white" step="0.01" min={minBid} max={99999} />
             <p className="text-xs text-slate-400 mt-1">
               Minimum bid: ${minBid} • Maximum bid: $99,999
