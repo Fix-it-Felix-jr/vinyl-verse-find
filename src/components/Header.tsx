@@ -56,7 +56,7 @@ const Header = ({
           <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white hover:bg-slate-800" onClick={() => navigate('/cart')}>
             <div className="relative">
               <ShoppingCart className="h-5 w-5" />
-              {getTotalItems() > 0 && <Badge className="absolute -top-4 -right-5 bg-purple-600 text-white text-xs min-w-[1.25rem] h-5 flex items-center justify-center p-0 px-[2px] mx- my--0.5">
+              {getTotalItems() > 0 && <Badge className="absolute -top-4 -right-5 bg-purple-600 text-white text-xs min-w-[1.25rem] h-5 flex items-center justify-center p-0 px-[2px] mx- my--1">
                   {getTotalItems()}
                 </Badge>}
             </div>
